@@ -4,6 +4,35 @@
   
     
     <entry>
+      <title>修复安装MyBase后右键新建TXT变成RTF的问题</title>
+      <link href="/2026/08/16/%E4%BF%AE%E5%A4%8D%E5%8F%B3%E9%94%AE%E6%96%B0%E5%BB%BAtxt/"/>
+      <url>/2026/08/16/%E4%BF%AE%E5%A4%8D%E5%8F%B3%E9%94%AE%E6%96%B0%E5%BB%BAtxt/</url>
+      
+        <content type="html"><![CDATA[<p>前几天可能是安装了新版 MyBase 个人数据管理软件的缘故，发现右键新建的 <code>.txt</code> 文本变成了 <code>.rtf</code> 文档格式。这实在是不方便，毕竟 TXT 文本才是日常最常用的。找了个注册表修改文件，导入后终于恢复了正常。</p><!-- 这里可以放置一张出问题时的截图：右键菜单显示新建RTF文档 --><p>![右键新建菜单变成RTF格式]<br>(<img src="https://cloudflare-imgbed-dxy.pages.dev/file/1786877979940_image.png" alt="image.png">)</p><p>下面分享一下具体的修复方法。<br>使用以下两个注册表文件分别运行<br>就可以将新建txt变回来了。<br><img src="https://cloudflare-imgbed-dxy.pages.dev/file/1786878270403_image.png" alt="image.png"></p><p>最终效果<br><img src="https://cloudflare-imgbed-dxy.pages.dev/file/1786878224288_image.png" alt="image.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 经验教程 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Windows </tag>
+            
+            <tag> 注册表 </tag>
+            
+            <tag> 效率 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>欧加真深度刷机9008步骤汇总</title>
       <link href="/2026/01/14/%E6%AC%A7%E5%8A%A0%E7%9C%9F%E6%B7%B1%E5%BA%A6%E5%88%B7%E6%9C%BA9008%E6%AD%A5%E9%AA%A4%E6%B1%87%E6%80%BB/"/>
       <url>/2026/01/14/%E6%AC%A7%E5%8A%A0%E7%9C%9F%E6%B7%B1%E5%BA%A6%E5%88%B7%E6%9C%BA9008%E6%AD%A5%E9%AA%A4%E6%B1%87%E6%80%BB/</url>
@@ -37,11 +66,11 @@
       
         <tags>
             
+            <tag> 系统安装 </tag>
+            
             <tag> 电脑工具 </tag>
             
             <tag> 免费工具 </tag>
-            
-            <tag> 系统安装 </tag>
             
         </tags>
       
@@ -60,11 +89,11 @@
       
         <tags>
             
+            <tag> 系统安装 </tag>
+            
             <tag> 电脑工具 </tag>
             
             <tag> 免费工具 </tag>
-            
-            <tag> 系统安装 </tag>
             
         </tags>
       
