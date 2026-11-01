@@ -22880,6 +22880,74 @@ canvas#universe {
   }
 }
 
+/* ============================================================
+   朋友圈卡片：鼠标悬停时展开，完整显示全部详细信息
+   默认状态：卡片固定 90px 高，描述只显示两行（主题原样）
+   悬停状态：卡片高度自动撑开，头像收起，名字与描述完整显示
+   ============================================================ */
+.fcircle_page #article-container .anzhiyu-flink-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.fcircle_page #article-container .anzhiyu-flink-list .flink-list-item {
+  float: none;
+  height: auto;
+  min-height: 90px;
+  max-height: 90px;
+  transition: max-height 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* 只在支持悬停的桌面设备上启用展开，避免移动端触摸后卡住 */
+@media (hover: hover) and (pointer: fine) {
+  .fcircle_page #article-container .anzhiyu-flink-list .flink-list-item:hover {
+    max-height: 800px;
+    z-index: 10;
+  }
+
+  /* 头像收起，把整张卡片的宽度让给文字 */
+  .fcircle_page #article-container .anzhiyu-flink-list .flink-list-item:hover .cf-friends-link img {
+    width: 0;
+    height: 0;
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+    opacity: 0;
+  }
+
+  .fcircle_page #article-container .anzhiyu-flink-list .flink-list-item:hover .flink-item-info {
+    width: 100%;
+    min-width: 100%;
+    padding: 12px 14px;
+    box-sizing: border-box;
+  }
+
+  /* 名字不再省略号截断，允许换行 */
+  .fcircle_page #article-container .anzhiyu-flink-list .flink-list-item:hover .flink-item-name {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    max-width: 100%;
+    line-height: 22px;
+    margin-bottom: 6px;
+  }
+
+  /* 描述解除两行限制，完整展示 */
+  .fcircle_page #article-container .anzhiyu-flink-list .flink-list-item:hover .flink-item-desc {
+    display: block;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+    white-space: normal;
+    word-break: break-word;
+    padding: 0;
+    line-height: 21px;
+  }
+}
+
 #gitcalendar #git_container ul li {
   margin: 0 !important;
 }
