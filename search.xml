@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>测试文章</title>
+      <link href="/2026/11/03/%E6%B5%8B%E8%AF%95%E8%BE%85%E5%8A%A9%E5%8F%91%E5%B8%83%E8%BD%AF%E4%BB%B6/"/>
+      <url>/2026/11/03/%E6%B5%8B%E8%AF%95%E8%BE%85%E5%8A%A9%E5%8F%91%E5%B8%83%E8%BD%AF%E4%BB%B6/</url>
+      
+        <content type="html"><![CDATA[<p><img src="https://cloudflare-imgbed-dxy.pages.dev/file/1793657971495_122712055_p0_master1200.jpg" alt="122712055_p0_master1200"><br>这是本地服务的第一次测试，是一个辅助文章发布的程序<br><img src="https://cloudflare-imgbed-dxy.pages.dev/file/1793658018381_image.png" alt="image"></p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 测试 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>修复安装MyBase后右键新建TXT变成RTF的问题</title>
       <link href="/2026/08/16/%E4%BF%AE%E5%A4%8D%E5%8F%B3%E9%94%AE%E6%96%B0%E5%BB%BAtxt/"/>
       <url>/2026/08/16/%E4%BF%AE%E5%A4%8D%E5%8F%B3%E9%94%AE%E6%96%B0%E5%BB%BAtxt/</url>
@@ -66,11 +85,11 @@
       
         <tags>
             
-            <tag> 系统安装 </tag>
-            
             <tag> 电脑工具 </tag>
             
             <tag> 免费工具 </tag>
+            
+            <tag> 系统安装 </tag>
             
         </tags>
       
@@ -89,11 +108,11 @@
       
         <tags>
             
-            <tag> 系统安装 </tag>
-            
             <tag> 电脑工具 </tag>
             
             <tag> 免费工具 </tag>
+            
+            <tag> 系统安装 </tag>
             
         </tags>
       
