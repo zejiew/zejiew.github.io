@@ -8,7 +8,7 @@
       <link href="/2026/11/03/cloudflare-imgbed2.0%E4%B8%8A%E7%BA%BF/"/>
       <url>/2026/11/03/cloudflare-imgbed2.0%E4%B8%8A%E7%BA%BF/</url>
       
-        <content type="html"><![CDATA[<p>相比上一版使用的图床，这一版的后台优化更好，这次部署决定使用负载均衡的多渠道。<br>旧地址：picture.971853.com保留、新图片统一上传至picture.zejiewdp.kdns.fr<br>TG渠道使用通库。后续完善定制化。<br>感谢cloudflare大善人和cloudflare-imgbed项目开源<br><img src="https://cloudflare-imgbed-dxy.pages.dev/file/1793712977950_image.png" alt="image"></p>]]></content>
+        <content type="html"><![CDATA[<p>相比上一版使用的图床，这一版的后台优化更好，这次部署决定使用负载均衡的多渠道。<br>旧地址：picture.971853.com保留、新图片统一上传至picture.zejiewdp.kdns.fr<br>TG渠道使用通库。后续完善定制化。<br>感谢cloudflare大善人和cloudflare-imgbed项目开源<br><img src="https://cloudflare-imgbed-dxy.pages.dev/file/1793712977950_image.png" alt="image"></p><p>并且添加了多个储存，包括discord TG 笑脸<br><img src="https://picture.zejiewdp.kdns.fr/file/1793725266477_image.png" alt="image"><br>对于加载速度有很大的提升。<br><img src="https://picture.zejiewdp.kdns.fr/file/1793725396352_image.png" alt="image"><br>所有链路都已经跑通。</p>]]></content>
       
       
       <categories>
@@ -112,11 +112,11 @@
       
         <tags>
             
+            <tag> 系统安装 </tag>
+            
             <tag> 电脑工具 </tag>
             
             <tag> 免费工具 </tag>
-            
-            <tag> 系统安装 </tag>
             
         </tags>
       
@@ -135,11 +135,11 @@
       
         <tags>
             
+            <tag> 系统安装 </tag>
+            
             <tag> 电脑工具 </tag>
             
             <tag> 免费工具 </tag>
-            
-            <tag> 系统安装 </tag>
             
         </tags>
       
