@@ -1,0 +1,576 @@
+<!DOCTYPE html><html lang="Zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>写作台：给 Hexo 博客一个能自动上传图床的本地 Markdown 编辑器 | 能美的秘密据点</title><meta name="keywords" content="Hexo 编辑器,Markdown 写作工具,CloudFlare-ImgBed,本地图床,front-matter"><meta name="author" content="zejiew"><meta name="copyright" content="zejiew"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="写作台：给 Hexo 博客一个能自动上传图床的本地 Markdown 编辑器"><meta name="application-name" content="写作台：给 Hexo 博客一个能自动上传图床的本地 Markdown 编辑器"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="写作台：给 Hexo 博客一个能自动上传图床的本地 Markdown 编辑器"><meta property="og:url" content="http://kudryavka.top/2026/11/04/%E5%86%99%E4%BD%9C%E5%8F%B0%EF%BC%9A%E7%BB%99%20Hexo%20%E5%8D%9A%E5%AE%A2%E4%B8%80%E4%B8%AA%E8%83%BD%E8%87%AA%E5%8A%A8%E4%B8%8A%E4%BC%A0%E5%9B%BE%E5%BA%8A%E7%9A%84%E6%9C%AC%E5%9C%B0%20Markdown%20%E7%BC%96%E8%BE%91%E5%99%A8/index.html"><meta property="og:site_name" content="能美的秘密据点"><meta property="og:description" content="写完一篇博客，最烦的往往不是写，而是配图：开图床、上传、复制链接、切回编辑器……我给自己写了一个跑在本机的「写作台」——粘贴截图就自动进图床，26 个 front-matter 字段图形化填写，保存后点一下就能 hexo clean &amp;amp;&amp;amp; hexo generate -d。"><meta property="og:locale" content="Zh-CN"><meta property="og:image" content="https://picture.zejiewdp.kdns.fr/file/1793727777643_Gemini_Generated_Image_wbz568wbz568wbz5.png"><meta property="article:author" content="zejiew"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://picture.zejiewdp.kdns.fr/file/1793727777643_Gemini_Generated_Image_wbz568wbz568wbz5.png"><meta name="description" content="写完一篇博客，最烦的往往不是写，而是配图：开图床、上传、复制链接、切回编辑器……我给自己写了一个跑在本机的「写作台」——粘贴截图就自动进图床，26 个 front-matter 字段图形化填写，保存后点一下就能 hexo clean &amp;amp;&amp;amp; hexo generate -d。"><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="http://kudryavka.top/2026/11/04/%E5%86%99%E4%BD%9C%E5%8F%B0%EF%BC%9A%E7%BB%99%20Hexo%20%E5%8D%9A%E5%AE%A2%E4%B8%80%E4%B8%AA%E8%83%BD%E8%87%AA%E5%8A%A8%E4%B8%8A%E4%BC%A0%E5%9B%BE%E5%BA%8A%E7%9A%84%E6%9C%AC%E5%9C%B0%20Markdown%20%E7%BC%96%E8%BE%91%E5%99%A8/"><link rel="preconnect" href="//cdn.cbd.int"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: undefined,
+  postHeadAiDescription: {"enable":true,"gptName":"AnZhiYu","mode":"local","switchBtn":false,"btnLink":"https://afdian.net/item/886a79d4db6711eda42a52540025c377","randomNum":3,"basicWordCount":1000,"key":"xxxx","Referer":"https://xx.xx/"},
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: undefined,
+  greetingBox: undefined,
+  twikooEnvId: '',
+  commentBarrageConfig:undefined,
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: true,
+  mainTone: undefined,
+  authorStatus: {"skills":["🤖 一位业余技术研究爱好者","🔍 知识与资源的收集砖家","🎸 吉他尤克里里乐器通修","🔨 无情的制谱机器","📸 航拍街拍风光拍摄影爱好者","🦾 生成式AI、音频、图像AI爱好者","🧱 小组任务顶级发动机","💐 文学热爱者","🌏 热情的好心人"]},
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: zejiew","link":"链接: ","source":"来源: 能美的秘密据点","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: '能美的秘密据点',
+  title: '写作台：给 Hexo 博客一个能自动上传图床的本地 Markdown 编辑器',
+  postAI: '',
+  pageFillDescription: '写在前面：写博客最烦的其实是配图, 它长什么样, 走一遍完整流程, 26 个 front-matter 字段终于不用背了, 为什么非要起一个本地服务？, 发布日志：绕开管道踩过的坑, 配置一次之后就忘了它, 关于数据安全说几句实话, 还有两个自测, 怎么用起来, 实际效果, 最后写在前面写博客最烦的其实是配图写正文本来是最享受的部分可实际写起来流程是这样的截图存到桌面打开图床网页选文件等上传复制链接切回编辑器粘贴调整一下语法一篇文章配十张图这套动作就要重复十遍中间只要手滑复制错了还要回去翻图床后台找那张图比配图更磨人的是我用的是主题一篇文章的头部字段有二十多个要图片地址还是和到底控制什么填不填每次之后都要对着主题文档一个个查查完还得记住留空等于用主题默认值这条规矩再加上每次想看看效果要么开一个等它热更新要么直接推上去看线上都不算顺畅于是就有了这个项目写作台一个跑在本机只干一件事的写稿页粘贴或拖入图片自动上传到你的图床链接直接落回光标处写完点一下就能构建发布项目地址它长什么样一句话概括一个本地网页长在上剪贴板截图拖进来的图片本机上跑的小服务你自己的图床名字链接直接插进正文几个从一开始就定死的原则零依赖只要有不用不连任何断网也能写渲染器已经内置在仓库里只绑它不打算给谁远程访问就是一个本机的小工具图片不落地截图直接进图床博客仓库里不会多出一堆文件夹图床是你自己的地址和认证码填在你自己机器上代码里这两个值是空的谁都不会带着别人的图床走一遍完整流程第一步启动双击启动写作台或者控制台会把它找到的东西都打印出来这一点我觉得比请手动配置友好很多写作台已启动博客目录文章目录图床它会从工具所在目录往上找找那个同时有和的目录当博客根目录工具放在博客外面也行指一下就好端口被别的程序占了会自动顺延到以控制台打印的为准第二步挑一篇文章左侧列表按修改时间排序标题取的是里的可以直接搜索新建打开保存都在这一屏完成第三步写编辑分栏纯预览三种视图分栏时滚动同步工具栏该有的都有粗体斜体删除线引用有序无序列表行内代码代码块链接表格分割线还有一个按钮预览用的是参数按的默认值设置不是随便渲染一下是尽量贴近站点上的实际效果第四步贴图三种方式粘贴剪贴板里的截图直接把图片文件拖进编辑区点工具栏的插入图片上传完成后链接会直接插到光标位置插入格式可以在设置里切换格式效果图片名纯链接还可以勾上上传后自动复制链接这样排版时想手动放到别处也方便第五步填属性这一块是我花时间最多的地方下面单独说第六步保存直接写回文件名页面每秒会把未保存的内容存一份到误关标签页后下次打开还能恢复顶栏那个月亮图标可以切换明暗主题晚上写东西不刺眼第七步发布点发布它会先保存当前文章再执行构建日志在右下角抽屉里实时滚动个字段终于不用背了栏下面有一个文章属性面板把主题文档里的字段全部做成了表单改了日期会保留原来的时分秒不会把的排序打乱逗号分隔填写写回文件时变成摘要首页卡片和都用它面板里有一个从正文生成封面图和顶部大图都能直接上传还能用顶部封面一键把地址复制给另一个也可以填强制关掉这些是页面开关做成了三态默认不写字段跟主题配置走开关首页轮播和推荐卡片的排序还有版权模块那一组字段几个细节值得说留空的字段不会被写进文件等于用主题默认值所以不想管的字段不填就行保存时字段顺序保持你原文件的样子新增的字段按面板顺序追加面板里没有覆盖的字段比如某些插件自己的字段不会被吃掉原样留在里这一点我特意写了往返测试来保证写博客的工具把用户的手写内容弄丢是不可接受的另外也顺手处理了两个编辑器常见的小毛病文件开头带或者丢了第一行的写作台都能正确读出来保存时写成标准格式为什么非要起一个本地服务这是整个项目里最有意思的一个问题你可能会想一个网页而已为什么不能直接在前端把图片给图床因为浏览器读不到响应实测部署的跨域行为是这样的预检返回带响应里没有任何头也就是说图片其实已经传上去了但浏览器拿不到响应体读不到那个图片链接预检通过被拦属于最容易被误判成图床挂了的那一类问题所以必须有一层同源的本地代理浏览器同源无跨域图床顺带还有三个好处认证码留在本机不经过浏览器可以给图片指定上传失败时能拿到图床返回的真实状态码而不是一句网络错误图床接口的契约实测官方文档大致是认证码体二进制数组或对象认证码错不同版本的图床返回的数组对象不一致代码里两种都做了兼容顺便说说适配里上传逻辑集中在一个函数只要你的图床接口长得差不多里一个字段返回里有图片链接改这一个函数就能接上前端一行都不用动兰空图床兼容存储这类都有人这么接过发布日志绕开管道踩过的坑最初发布功能的实现是把的输出从管道读出来显示逻辑上没毛病但在某些受限环境下会直接抛匿名管道被系统策略拒绝了现在的做法是完全绕开管道子进程直接写服务端按字节偏移增量读让子进程自己持有文件句柄往里写服务端用字节偏移加增量读取这样做的好处是日志实时滚动前端断线重连不会重复输出中文不会被从中间切坏如果哪天你看到发布日志只有一行启动失败那说明跑的是旧版本重启一下服务就好配置一次之后就忘了它第一次打开点右上角设置填两样东西图床地址和上传认证码图床没开认证码就留空点保存会同时写两个地方存到哪作用浏览器当前页面立刻生效本机下次启动自动读取换端口换浏览器清掉站点数据都不影响配置一次是字面意思优先级是界面设置手改配置文件需要重启服务或者访问从界面保存则立刻生效在你第一次保存时自动生成已经在里想在部署前就写好也行如果不喜欢点界面也可以直接拿调接口传图写脚本批量发文章也行其余接口也都开在下文章列表读写单篇构建增量日志配置读写想接或者自己的脚本直接对着用就行关于数据安全说几句实话这个工具会直接动你的博客仓库所以有几条是刻意的只读写下的文件名做了路径穿越校验里不认识的字段原样保留插件字段都不会被吃掉日期没改动就沿用原文件的写法含时分秒避免的排序被打乱保存完一眼就能确认改了什么关于认证码它明文存在本机里这个文件已被服务只监听没有登录鉴权所以别把改成也别把这个端口暴露到公网非要在内网用请自己在前面加一层反向代理和密码已知的一处轻微规范化原文件里空值的比如光秃秃一行保存时会被省略对的行为没有影响还有两个自测写这种会改用户文件的工具光靠肉眼点几下是不够的所以带了一个最小的测试集等价于对文章目录每篇做打开重建往返校验正文与字段最小里跑完抓选择器拼错初始化异常会把里每一篇读出来重建一遍再比对正文和字段有没有丢顺序有没有乱它来兜底也可以指定目录跑需要一个已经启动的服务默认可以用环境变量改因为是在最小的环境里把跑一遍它能抓到选择器拼错了初始化抛异常这类问题这类在浏览器里表现就是白屏很难查怎么用起来把仓库里的目录放到博客里比如博客根目录双击启动写作台用浏览器打开第一次进去填图床地址和认证码开写前提只有一个没有没有构建步骤没有后台常驻进程关掉那个黑窗口服务就停了实际效果下面几张是实际使用时的界面最后这个工具没有任何平台的野心它解决的问题非常具体我写博客我用自己的图床我不想每次配图都切窗口所以它只有两个文件值得一看负责所有跟本机文件图床打交道的部分负责界面中间靠一层薄薄的连着代码是协议欢迎拿走改成适合自己博客的样子如果你的博客不是改指向你的目录也能用如果用的是别的主题改顶部的表就能加上自己的字段一条记录就是一个字段名加一个类型有或者想要的功能直接开就好感谢提供的图床接口提供的渲染能力以及没有它们这个工具连一行都写不出来',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-11-04 01:20:00',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="https://cloudflare-imgbed-dxy.pages.dev/file/1745950453548_33145.png"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">能美的秘密据点</div><div class="back-menu-list"><a class="back-menu-item" href="https://kudryavka.top" title="能美的秘密据点"><img class="back-menu-item-icon" src="/img/favicon.ico" alt="能美的秘密据点"/><span class="back-menu-item-text">能美的秘密据点</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">小工具项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://image.anheyu.com/" title="日后整理"><img class="back-menu-item-icon" src="https://image.anheyu.com/favicon.ico" alt="日后整理"/><span class="back-menu-item-text">日后整理</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">能美的秘密据点</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 要闻直通</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友情链接</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 休闲娱乐</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=18541680699&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 趣闻闲语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button only-home" id="travellings_button" title="随机前往一个开往项目网站"><a class="site-page" onclick="anzhiyu.totraveling()" title="随机前往一个开往项目网站" href="javascript:void(0);" rel="external nofollow" data-pjax-state="external"><i class="anzhiyufont anzhiyu-icon-train"></i></a></div><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索🔍" accesskey="s"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span> 搜索</span></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://cloudflare-imgbed-dxy.pages.dev/file/1748241038163_微信图片_20250526143017.jpg" target="_blank"><img class="post-qr-code-img" alt="微信" src="https://cloudflare-imgbed-dxy.pages.dev/file/1748241038163_微信图片_20250526143017.jpg"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://cloudflare-imgbed-dxy.pages.dev/file/1748241043421_微信图片_20250526143011.jpg" target="_blank"><img class="post-qr-code-img" alt="支付宝" src="https://cloudflare-imgbed-dxy.pages.dev/file/1748241043421_微信图片_20250526143011.jpg"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/Hexo/" style="font-size: 1.05rem;">Hexo<sup>1</sup></a><a href="/tags/Markdown/" style="font-size: 1.05rem;">Markdown<sup>1</sup></a><a href="/tags/Windows/" style="font-size: 1.05rem;">Windows<sup>1</sup></a><a href="/tags/%E4%BC%98%E5%8C%96/" style="font-size: 1.05rem;">优化<sup>1</sup></a><a href="/tags/%E5%85%8D%E8%B4%B9%E5%B7%A5%E5%85%B7/" style="font-size: 1.05rem;">免费工具<sup>2</sup></a><a href="/tags/%E5%8D%9A%E5%AE%A2%E5%B7%A5%E5%85%B7/" style="font-size: 1.05rem;">博客工具<sup>1</sup></a><a href="/tags/%E5%9B%BE%E5%BA%8A/" style="font-size: 1.05rem;">图床<sup>1</sup></a><a href="/tags/%E5%AE%98%E6%96%B9/" style="font-size: 1.05rem;">官方<sup>1</sup></a><a href="/tags/%E5%BC%80%E6%BA%90%E5%B7%A5%E5%85%B7/" style="font-size: 1.05rem;">开源工具<sup>1</sup></a><a href="/tags/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/" style="font-size: 1.05rem;">开源项目<sup>1</sup></a><a href="/tags/%E6%89%8B%E6%9C%BA%E5%88%B7%E6%9C%BA/" style="font-size: 1.05rem;">手机刷机<sup>1</sup></a><a href="/tags/%E6%95%88%E7%8E%87/" style="font-size: 1.05rem;">效率<sup>1</sup></a><a href="/tags/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7/" style="font-size: 1.05rem;">效率工具<sup>1</sup></a><a href="/tags/%E6%95%91%E6%8F%B4/" style="font-size: 1.05rem;">救援<sup>1</sup></a><a href="/tags/%E6%95%99%E7%A8%8B%E6%95%B4%E7%90%86/" style="font-size: 1.05rem;">教程整理<sup>1</sup></a><a href="/tags/%E6%B3%A8%E5%86%8C%E8%A1%A8/" style="font-size: 1.05rem;">注册表<sup>1</sup></a><a href="/tags/%E6%B5%8B%E8%AF%95/" style="font-size: 1.05rem;">测试<sup>1</sup></a><a href="/tags/%E7%94%B5%E8%84%91%E5%B7%A5%E5%85%B7/" style="font-size: 1.05rem;">电脑工具<sup>3</sup></a><a href="/tags/%E7%A1%AC%E7%9B%98%E6%B8%85%E7%90%86/" style="font-size: 1.05rem;">硬盘清理<sup>1</sup></a><a href="/tags/%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85/" style="font-size: 1.05rem;">系统安装<sup>4</sup></a><a href="/tags/%E8%BD%AF%E4%BB%B6%E6%8E%A8%E8%8D%90/" style="font-size: 1.05rem;">软件推荐<sup>1</sup></a><a href="/tags/%E9%A1%B9%E7%9B%AE/" style="font-size: 1.05rem;">项目<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2026/11/"><span class="card-archive-list-date">十一月 2026</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">3</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2026/08/"><span class="card-archive-list-date">八月 2026</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2026/01/"><span class="card-archive-list-date">一月 2026</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/06/"><span class="card-archive-list-date">六月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">5</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/04/"><span class="card-archive-list-date">四月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE/" itemprop="url">项目</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/Hexo/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>Hexo</span></a><a class="article-meta__tags" href="/tags/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>开源项目</span></a><a class="article-meta__tags" href="/tags/%E5%8D%9A%E5%AE%A2%E5%B7%A5%E5%85%B7/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>博客工具</span></a><a class="article-meta__tags" href="/tags/%E5%9B%BE%E5%BA%8A/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>图床</span></a><a class="article-meta__tags" href="/tags/Markdown/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>Markdown</span></a></span></div></div><h1 class="post-title" itemprop="name headline">写作台：给 Hexo 博客一个能自动上传图床的本地 Markdown 编辑器</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2026-11-03T17:20:00.000Z" title="发表于 2026-11-04 01:20:00">2026-11-04</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2026-11-03T17:20:00.000Z" title="更新于 2026-11-04 01:20:00">2026-11-04</time></span></div><div class="meta-secondline"><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为广州"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>广州</span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="https://picture.zejiewdp.kdns.fr/file/1793727777643_Gemini_Generated_Image_wbz568wbz568wbz5.png"></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="http://kudryavka.top/2026/11/04/%E5%86%99%E4%BD%9C%E5%8F%B0%EF%BC%9A%E7%BB%99%20Hexo%20%E5%8D%9A%E5%AE%A2%E4%B8%80%E4%B8%AA%E8%83%BD%E8%87%AA%E5%8A%A8%E4%B8%8A%E4%BC%A0%E5%9B%BE%E5%BA%8A%E7%9A%84%E6%9C%AC%E5%9C%B0%20Markdown%20%E7%BC%96%E8%BE%91%E5%99%A8/"><header><a class="post-meta-categories" href="/categories/%E9%A1%B9%E7%9B%AE/" itemprop="url">项目</a><a href="/tags/Hexo/" tabindex="-1" itemprop="url">Hexo</a><a href="/tags/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/" tabindex="-1" itemprop="url">开源项目</a><a href="/tags/%E5%8D%9A%E5%AE%A2%E5%B7%A5%E5%85%B7/" tabindex="-1" itemprop="url">博客工具</a><a href="/tags/%E5%9B%BE%E5%BA%8A/" tabindex="-1" itemprop="url">图床</a><a href="/tags/Markdown/" tabindex="-1" itemprop="url">Markdown</a><h1 id="CrawlerTitle" itemprop="name headline">写作台：给 Hexo 博客一个能自动上传图床的本地 Markdown 编辑器</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">zejiew</span><time itemprop="dateCreated datePublished" datetime="2026-11-03T17:20:00.000Z" title="发表于 2026-11-04 01:20:00">2026-11-04</time><time itemprop="dateCreated datePublished" datetime="2026-11-03T17:20:00.000Z" title="更新于 2026-11-04 01:20:00">2026-11-04</time></header><h2 id="写在前面：写博客最烦的其实是配图"><a href="#写在前面：写博客最烦的其实是配图" class="headerlink" title="写在前面：写博客最烦的其实是配图"></a>写在前面：写博客最烦的其实是配图</h2><p>写正文本来是最享受的部分。可实际写起来，流程是这样的：</p>
+<p>截图存到桌面 → 打开图床网页 → 选文件 → 等上传 → 复制链接 → 切回编辑器 → 粘贴 → 调整一下 Markdown 语法。一篇文章配十张图，这套动作就要重复十遍。中间只要手滑复制错了，还要回去翻图床后台找那张图。</p>
+<p>比配图更磨人的是 front-matter。我用的是 AnZhiYu 主题，一篇文章的头部字段有二十多个：<code>top_img</code> 要图片地址还是 <code>false</code>？<code>toc_number</code> 和 <code>toc_style_simple</code> 到底控制什么？<code>swiper_index</code> 填不填？每次 <code>hexo new</code> 之后都要对着主题文档一个个查，查完还得记住「留空等于用主题默认值」这条规矩。</p>
+<p>再加上每次想看看效果，要么开一个 <code>hexo s</code> 等它热更新，要么直接推上去看线上——都不算顺畅。</p>
+<p>于是就有了这个项目：<strong>写作台（hexoblog-md-write-HEXO）</strong>，一个跑在本机、只干一件事的 Markdown 写稿页——<strong>粘贴或拖入图片，自动上传到你的图床，链接直接落回光标处；写完点一下就能构建发布。</strong></p>
+<p>项目地址：<a target="_blank" rel="noopener" href="https://github.com/zejiew/hexoblog-md-write-HEXO---">https://github.com/zejiew/hexoblog-md-write-HEXO---</a></p>
+<hr>
+<h2 id="它长什么样"><a href="#它长什么样" class="headerlink" title="它长什么样"></a>它长什么样</h2><p>一句话概括：<strong>一个本地网页，长在 <code>source/_posts</code> 上。</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">剪贴板截图 / 拖进来的图片</span><br><span class="line">        │</span><br><span class="line">        ▼</span><br><span class="line">  本机上跑的小服务  ──POST──▶  你自己的图床（CloudFlare-ImgBed）</span><br><span class="line">        │                        │</span><br><span class="line">        └────  ![名字](链接)  ◀───┘   直接插进正文</span><br></pre></td></tr></table></figure>
+
+<p>几个从一开始就定死的原则：</p>
+<ul>
+<li><strong>零依赖</strong>：只要有 Node.js 18+，不用 <code>npm install</code>，不连任何 CDN，断网也能写（Markdown 渲染器 marked 已经内置在仓库里）</li>
+<li>**只绑 <code>127.0.0.1</code>**：它不打算给谁远程访问，就是一个本机的小工具</li>
+<li><strong>图片不落地</strong>：截图直接进图床，博客仓库里不会多出一堆 <code>images/</code> 文件夹</li>
+<li><strong>图床是你自己的</strong>：地址和认证码填在你自己机器上，代码里这两个值是空的，谁 clone 都不会带着别人的图床</li>
+</ul>
+<hr>
+<h2 id="走一遍完整流程"><a href="#走一遍完整流程" class="headerlink" title="走一遍完整流程"></a>走一遍完整流程</h2><p><strong>第一步，启动。</strong> 双击 <code>启动写作台.bat</code>，或者：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Windows</span></span><br><span class="line">node tools\md-writer\server.js --open</span><br><span class="line"></span><br><span class="line"><span class="comment"># macOS / Linux</span></span><br><span class="line">sh tools/md-writer/start.sh</span><br></pre></td></tr></table></figure>
+
+<p>控制台会把它找到的东西都打印出来，这一点我觉得比「请手动配置」友好很多：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">写作台已启动  →  http://127.0.0.1:8787/</span><br><span class="line">博客目录      →  D:\my-blog</span><br><span class="line">文章目录      →  D:\my-blog\source\_posts</span><br><span class="line">图床          →  https://img.example.com</span><br></pre></td></tr></table></figure>
+
+<p>它会从工具所在目录往上找，找那个同时有 <code>_config.yml</code> 和 <code>source/_posts</code> 的目录当博客根目录。工具放在博客外面也行，<code>--blog</code> 指一下就好。端口被别的程序占了会自动顺延到 8788、8789，以控制台打印的为准。</p>
+<p><strong>第二步，挑一篇文章。</strong> 左侧列表按修改时间排序，标题取的是 front-matter 里的 <code>title</code>，可以直接搜索。新建、打开、保存都在这一屏完成。</p>
+<p><strong>第三步，写。</strong> 编辑 &#x2F; 分栏 &#x2F; 纯预览三种视图，分栏时滚动同步。工具栏该有的都有：H1–H3、粗体斜体删除线、引用、有序无序列表、行内代码、代码块、链接、表格、分割线，还有一个 <code>&lt;!-- more --&gt;</code> 按钮。</p>
+<p>预览用的是 marked，参数按 <code>hexo-renderer-marked</code> 的默认值设置（<code>gfm</code>、<code>breaks</code>、<code>headerIds</code>、<code>mangle</code>）——不是随便渲染一下，是尽量贴近站点上的实际效果。</p>
+<p><strong>第四步，贴图。</strong> 三种方式：<code>Ctrl+V</code> 粘贴剪贴板里的截图、直接把图片文件拖进编辑区、点工具栏的「插入图片」。上传完成后，链接会直接插到光标位置。</p>
+<p>插入格式可以在设置里切换：</p>
+<table>
+<thead>
+<tr>
+<th>格式</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Markdown</td>
+<td><code>![图片名](https://…/file/x.png)</code></td>
+</tr>
+<tr>
+<td>HTML</td>
+<td><code>&lt;img src=&quot;https://…/file/x.png&quot;&gt;</code></td>
+</tr>
+<tr>
+<td>纯链接</td>
+<td><code>https://…/file/x.png</code></td>
+</tr>
+</tbody></table>
+<p>还可以勾上「上传后自动复制链接」，这样排版时想手动放到别处也方便。</p>
+<p><strong>第五步，填属性。</strong> 这一块是我花时间最多的地方，下面单独说。</p>
+<p><strong>第六步，保存。</strong> <code>Ctrl+S</code>，直接写回 <code>source/_posts/文件名.md</code>。页面每 3 秒会把未保存的内容存一份到 localStorage，误关标签页后下次打开还能恢复。顶栏那个月亮图标可以切换明暗主题，晚上写东西不刺眼。</p>
+<p><strong>第七步，发布。</strong> 点发布，它会先保存当前文章，再执行 <code>hexo clean &amp;&amp; hexo generate -d</code>，构建日志在右下角抽屉里实时滚动。</p>
+<hr>
+<h2 id="26-个-front-matter-字段，终于不用背了"><a href="#26-个-front-matter-字段，终于不用背了" class="headerlink" title="26 个 front-matter 字段，终于不用背了"></a>26 个 front-matter 字段，终于不用背了</h2><p>meta 栏下面有一个「文章属性」面板，把 AnZhiYu 主题文档里 Post Front-matter 的字段全部做成了表单：</p>
+<ul>
+<li><code>title</code> &#x2F; <code>date</code>：改了日期会保留原来的时分秒，不会把 Hexo 的排序打乱</li>
+<li><code>tags</code> &#x2F; <code>categories</code>：逗号分隔填写，写回文件时变成 <code>[&quot;a&quot;, &quot;b&quot;]</code></li>
+<li><code>description</code>：摘要，首页卡片和 meta description 都用它，面板里有一个「从正文生成」</li>
+<li><code>cover</code> &#x2F; <code>top_img</code>：封面图和顶部大图，都能直接上传，还能用「→顶部 &#x2F; →封面」一键把地址复制给另一个；也可以填 <code>false</code> 强制关掉</li>
+<li><code>comments</code> &#x2F; <code>toc</code> &#x2F; <code>toc_number</code> &#x2F; <code>toc_style_simple</code> &#x2F; <code>copyright</code> &#x2F; <code>aside</code> &#x2F; <code>mathjax</code> &#x2F; <code>katex</code> &#x2F; <code>highlight_shrink</code> &#x2F; <code>aplayer</code>：这些是页面开关，做成了<strong>三态</strong>——默认（不写字段，跟主题配置走）、开、关</li>
+<li><code>swiper_index</code> &#x2F; <code>top_group_index</code>：首页轮播和推荐卡片的排序</li>
+<li>还有 <code>keywords</code>、<code>updated</code>、<code>background</code>、版权模块那一组字段……</li>
+</ul>
+<p>几个细节值得说：</p>
+<blockquote>
+<p><strong>留空的字段不会被写进文件</strong>，等于用主题默认值。所以不想管的字段，不填就行。</p>
+</blockquote>
+<p>保存时，<strong>字段顺序保持你原文件的样子</strong>，新增的字段按面板顺序追加。面板里没有覆盖的字段（比如 <code>permalink</code>、某些插件自己的字段）<strong>不会被吃掉</strong>，原样留在 front-matter 里。这一点我特意写了往返测试来保证——写博客的工具把用户的手写内容弄丢，是不可接受的。</p>
+<p>另外也顺手处理了两个编辑器常见的小毛病：文件开头带 UTF-8 BOM，或者丢了第一行的 <code>---</code>，写作台都能正确读出来，保存时写成标准格式。</p>
+<hr>
+<h2 id="为什么非要起一个本地服务？"><a href="#为什么非要起一个本地服务？" class="headerlink" title="为什么非要起一个本地服务？"></a>为什么非要起一个本地服务？</h2><p>这是整个项目里最有意思的一个问题。你可能会想：一个网页而已，为什么不能直接在前端把图片 POST 给图床？</p>
+<p><strong>因为浏览器读不到响应。</strong></p>
+<p>实测 CloudFlare-ImgBed（Cloudflare Pages 部署）的跨域行为是这样的：</p>
+<ul>
+<li><code>OPTIONS</code> 预检：返回 200&#x2F;405，<strong>带</strong> <code>access-control-allow-origin: *</code></li>
+<li><code>POST /upload</code>：响应里<strong>没有任何</strong> <code>access-control-*</code> 头</li>
+</ul>
+<p>也就是说，图片其实已经传上去了，但浏览器拿不到响应体，读不到那个图片链接。预检通过、POST 被拦，属于最容易被误判成「图床挂了」的那一类问题。</p>
+<p>所以必须有一层同源的本地代理：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">浏览器 (File)</span><br><span class="line">   │  POST /api/upload        同源，无跨域</span><br><span class="line">   ▼</span><br><span class="line">server.js  ──FormData(file)──▶  POST &#123;图床&#125;/upload?authCode=…&amp;returnFormat=full</span><br><span class="line">   ▲                                        │</span><br><span class="line">   └──────── &#123; url: &quot;https://…/file/x.png&quot; &#125; ┘</span><br></pre></td></tr></table></figure>
+
+<p>顺带还有三个好处：认证码留在本机不经过浏览器、可以给图片指定 <code>uploadFolder</code>、上传失败时能拿到图床返回的真实状态码而不是一句「网络错误」。</p>
+<p>图床接口的契约（实测 + 官方文档）大致是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">POST &#123;imgbedBase&#125;/upload?authCode=&lt;认证码&gt;&amp;returnFormat=full&amp;responseFormat=object</span><br><span class="line">Content-Type: multipart/form-data</span><br><span class="line">体：file=&lt;二进制&gt;</span><br><span class="line"></span><br><span class="line">200 → [&#123; &quot;src&quot;: &quot;https://…/file/1793657117032_name.png&quot; &#125;]     // 数组</span><br><span class="line">      或 &#123; &quot;src&quot;: &quot;…&quot; &#125;                                        // 对象</span><br><span class="line">401 → Unauthorized（认证码错）</span><br><span class="line">400 → &#123; code: &quot;UPLOAD_FORMAT_NOT_ALLOWED&quot; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>不同版本的图床返回的数组&#x2F;对象不一致，代码里两种都做了兼容。</p>
+<p>顺便说说适配：<code>server.js</code> 里上传逻辑集中在 <code>uploadToImgbed()</code> 一个函数。只要你的图床接口长得差不多——<code>multipart/form-data</code> 里一个 <code>file</code> 字段、返回 JSON 里有图片链接——改这一个函数就能接上，前端一行都不用动。PicGo、兰空图床、S3 兼容存储这类都有人这么接过。</p>
+<hr>
+<h2 id="发布日志：绕开管道踩过的坑"><a href="#发布日志：绕开管道踩过的坑" class="headerlink" title="发布日志：绕开管道踩过的坑"></a>发布日志：绕开管道踩过的坑</h2><p>最初发布功能的实现是 <code>spawn(&#39;cmd&#39;, [...], &#123; stdio: &#39;pipe&#39; &#125;)</code>，把 hexo 的输出从管道读出来显示。逻辑上没毛病，但在某些受限环境下会直接抛 <code>spawn EPERM</code>——匿名管道被系统策略拒绝了。</p>
+<p>现在的做法是完全绕开管道：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">子进程 stdout/stderr ──直接写──▶ %TEMP%/mdw-hexo-build-&lt;pid&gt;.log</span><br><span class="line">                                      │  服务端按字节偏移增量读</span><br><span class="line">                                      ▼</span><br><span class="line">                              GET /api/build/log?from=N</span><br></pre></td></tr></table></figure>
+
+<p><code>stdio: [&#39;ignore&#39;, fd, fd]</code>，让子进程自己持有文件句柄往里写；服务端用字节偏移加 <code>StringDecoder</code> 增量读取。这样做的好处是：日志实时滚动、前端断线重连不会重复输出、中文不会被从中间切坏。</p>
+<p>如果哪天你看到发布日志只有一行「启动失败：spawn EPERM」，那说明跑的是旧版本，重启一下服务就好。</p>
+<hr>
+<h2 id="配置一次，之后就忘了它"><a href="#配置一次，之后就忘了它" class="headerlink" title="配置一次，之后就忘了它"></a>配置一次，之后就忘了它</h2><p>第一次打开，点右上角 ⚙️ 设置，填两样东西：<strong>图床地址</strong>和<strong>上传认证码</strong>（图床没开认证码就留空）。点保存，会同时写两个地方：</p>
+<table>
+<thead>
+<tr>
+<th>存到哪</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>浏览器 localStorage</td>
+<td>当前页面立刻生效</td>
+</tr>
+<tr>
+<td>本机 <code>config.local.json</code></td>
+<td>下次启动自动读取——换端口、换浏览器、清掉站点数据都不影响</td>
+</tr>
+</tbody></table>
+<p>「配置一次」是字面意思。优先级是 **界面设置 &gt; <code>config.local.json</code> &gt; <code>config.json</code>**。手改配置文件需要重启服务（或者访问 <code>/api/reload</code>），从界面保存则立刻生效。</p>
+<p><code>config.local.json</code> 在你第一次保存时自动生成，<strong>已经在 <code>.gitignore</code> 里</strong>。想在部署前就写好也行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cp</span> config.local.example.json config.local.json</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;imgbedBase&quot;</span><span class="punctuation">:</span> <span class="string">&quot;https://img.yourdomain.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;authCode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;my-secret-code&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果不喜欢点界面，也可以直接拿 <code>curl</code> 调接口传图，写脚本批量发文章也行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">curl -X POST http://127.0.0.1:8787/api/upload \</span><br><span class="line">  -H <span class="string">&quot;X-Filename: a.png&quot;</span> -H <span class="string">&quot;X-File-Type: image/png&quot;</span> \</span><br><span class="line">  -H <span class="string">&quot;X-Imgbed-Base: https://img.yourdomain.com&quot;</span> \</span><br><span class="line">  -H <span class="string">&quot;X-Auth-Code: my-secret-code&quot;</span> \</span><br><span class="line">  --data-binary <span class="string">&quot;@a.png&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>其余接口也都开在 <code>/api/</code> 下：文章列表、读写单篇、构建（<code>deploy</code> &#x2F; <code>preview</code> &#x2F; <code>clean</code>）、增量日志、配置读写。想接 Typora 或者自己的脚本，直接对着用就行。</p>
+<hr>
+<h2 id="关于数据安全，说几句实话"><a href="#关于数据安全，说几句实话" class="headerlink" title="关于数据安全，说几句实话"></a>关于数据安全，说几句实话</h2><p>这个工具会直接动你的博客仓库，所以有几条是刻意的：</p>
+<ul>
+<li>**只读写 <code>postsDir</code> 下的 <code>.md</code>**，文件名做了路径穿越校验</li>
+<li><strong>front-matter 里不认识的字段原样保留</strong>，<code>updated</code>、<code>permalink</code>、插件字段都不会被吃掉</li>
+<li><strong>日期没改动就沿用原文件的写法</strong>（含时分秒），避免 Hexo 的排序被打乱</li>
+<li>保存完 <code>git diff</code> 一眼就能确认改了什么</li>
+</ul>
+<p>关于认证码：它明文存在本机 <code>config.local.json</code> 里，这个文件已被 gitignore。服务只监听 <code>127.0.0.1</code>，<strong>没有登录鉴权</strong>，所以别把 <code>host</code> 改成 <code>0.0.0.0</code>，也别把这个端口暴露到公网。非要在内网用，请自己在前面加一层反向代理和密码。</p>
+<p>已知的一处轻微规范化：原文件里<strong>空值</strong>的 key（比如光秃秃一行 <code>tags:</code>）保存时会被省略。对 Hexo 的行为没有影响。</p>
+<hr>
+<h2 id="还有两个自测"><a href="#还有两个自测" class="headerlink" title="还有两个自测"></a>还有两个自测</h2><p>写这种「会改用户文件」的工具，光靠肉眼点几下是不够的，所以带了一个最小的测试集：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">npm <span class="built_in">test</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 等价于</span></span><br><span class="line">node <span class="built_in">test</span>/fm-roundtrip.js     <span class="comment"># 对文章目录每篇做「打开 → 重建」往返，校验正文与字段</span></span><br><span class="line">node <span class="built_in">test</span>/dom-smoke.js        <span class="comment"># 最小 DOM 里跑完 init()，抓选择器拼错、初始化异常</span></span><br></pre></td></tr></table></figure>
+
+<p><code>fm-roundtrip.js</code> 会把 <code>source/_posts</code> 里每一篇读出来、重建一遍、再比对正文和字段——front-matter 有没有丢、顺序有没有乱，它来兜底。也可以指定目录跑：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node <span class="built_in">test</span>/fm-roundtrip.js <span class="string">&quot;D:\my-blog\source\_posts&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>dom-smoke.js</code> 需要一个已经启动的服务（默认 <code>http://127.0.0.1:8787</code>，可以用环境变量 <code>MDW_BASE</code> 改）。因为是在最小的 DOM 环境里把 <code>init()</code> 跑一遍，它能抓到「选择器拼错了」「初始化抛异常」这类问题——这类 bug 在浏览器里表现就是白屏，很难查。</p>
+<hr>
+<h2 id="怎么用起来"><a href="#怎么用起来" class="headerlink" title="怎么用起来"></a>怎么用起来</h2><ol>
+<li>把仓库里的 <code>md-writer/</code> 目录放到博客里，比如 <code>博客根目录/tools/md-writer/</code></li>
+<li>双击 <code>启动写作台.bat</code>（macOS &#x2F; Linux 用 <code>sh start.sh</code>）</li>
+<li>浏览器打开 <code>http://127.0.0.1:8787/</code>，第一次进去填图床地址和认证码</li>
+<li>开写</li>
+</ol>
+<p>前提只有一个：**Node.js 18+**。没有 <code>npm install</code>，没有构建步骤，没有后台常驻进程，关掉那个黑窗口服务就停了。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/zejiew/hexoblog-md-write-HEXO---.git</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="实际效果"><a href="#实际效果" class="headerlink" title="实际效果"></a>实际效果</h2><p>下面几张是实际使用时的界面：</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://github.com/user-attachments/assets/42f31a27-865a-43c9-8c88-bc831b9f8303" alt="写作台界面截图"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://github.com/user-attachments/assets/b455391c-1dab-4cdd-8a46-5e2d811cf52b" alt="写作台界面截图"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://github.com/user-attachments/assets/22f7a6d6-c250-40fd-906d-d1b1d2accaf8" alt="写作台界面截图"></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://github.com/user-attachments/assets/e23575ce-caed-448d-b1c2-07f7e00d8abd" alt="写作台界面截图"></p>
+<hr>
+<h2 id="最后"><a href="#最后" class="headerlink" title="最后"></a>最后</h2><p>这个工具没有任何「平台」的野心。它解决的问题非常具体：<strong>我写 Hexo 博客、我用自己的图床、我不想每次配图都切窗口。</strong> 所以它只有两个文件值得一看——<code>server.js</code> 负责所有跟本机文件、图床、hexo 打交道的部分，<code>public/app.js</code> 负责界面，中间靠一层薄薄的 <code>/api/</code> 连着。</p>
+<p>代码是 MIT 协议，欢迎拿走改成适合自己博客的样子。如果你的博客不是 Hexo，改 <code>postsDir</code> 指向你的 Markdown 目录也能用；如果用的是别的主题，改 <code>public/app.js</code> 顶部的 <code>FIELDS</code> 表就能加上自己的 front-matter 字段——一条记录就是一个字段名加一个类型。</p>
+<p>有 bug 或者想要的功能，直接开 issue 就好。</p>
+<blockquote>
+<p>感谢 <a target="_blank" rel="noopener" href="https://github.com/MarSeventh/CloudFlare-ImgBed">CloudFlare-ImgBed</a> 提供的图床接口、<a target="_blank" rel="noopener" href="https://github.com/markedjs/marked">marked</a> 提供的渲染能力，以及 <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>——没有它们，这个工具连一行都写不出来。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cloudflare-imgbed-dxy.pages.dev/file/1745821252742_12.jpg" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cloudflare-imgbed-dxy.pages.dev/file/1745821252742_12.jpg" title="头像" alt="头像"></a><div class="post-copyright__author_name">zejiew</div><div class="post-copyright__author_desc">zejiew的记事本</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="http://kudryavka.top/2026/11/04/%E5%86%99%E4%BD%9C%E5%8F%B0%EF%BC%9A%E7%BB%99%20Hexo%20%E5%8D%9A%E5%AE%A2%E4%B8%80%E4%B8%AA%E8%83%BD%E8%87%AA%E5%8A%A8%E4%B8%8A%E4%BC%A0%E5%9B%BE%E5%BA%8A%E7%9A%84%E6%9C%AC%E5%9C%B0%20Markdown%20%E7%BC%96%E8%BE%91%E5%99%A8/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('http://kudryavka.top/2026/11/04/%E5%86%99%E4%BD%9C%E5%8F%B0%EF%BC%9A%E7%BB%99%20Hexo%20%E5%8D%9A%E5%AE%A2%E4%B8%80%E4%B8%AA%E8%83%BD%E8%87%AA%E5%8A%A8%E4%B8%8A%E4%BC%A0%E5%9B%BE%E5%BA%8A%E7%9A%84%E6%9C%AC%E5%9C%B0%20Markdown%20%E7%BC%96%E8%BE%91%E5%99%A8/')">写作台：给 Hexo 博客一个能自动上传图床的本地 Markdown 编辑器</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"><div class="post-reward" onclick="anzhiyu.addRewardMask()"><div class="reward-button button--animated" title="赞赏作者"><i class="anzhiyufont anzhiyu-icon-hand-heart-fill"></i>打赏作者</div><div class="reward-main"><div class="reward-all"><span class="reward-title">感谢你赐予我前进的力量</span><ul class="reward-group"><li class="reward-item"><a href="https://cloudflare-imgbed-dxy.pages.dev/file/1748241038163_微信图片_20250526143017.jpg" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cloudflare-imgbed-dxy.pages.dev/file/1748241038163_微信图片_20250526143017.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://cloudflare-imgbed-dxy.pages.dev/file/1748241043421_微信图片_20250526143011.jpg" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cloudflare-imgbed-dxy.pages.dev/file/1748241043421_微信图片_20250526143011.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul><a class="reward-main-btn" href="/about/#about-reward" target="_blank"><div class="reward-text">赞赏者名单</div><div class="reward-dec">因为你们的支持让我意识到写文章的价值🙏</div></a></div></div></div><div id="quit-box" onclick="anzhiyu.removeRewardMask()" style="display: none"></div></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="http://kudryavka.top/2026/11/04/%E5%86%99%E4%BD%9C%E5%8F%B0%EF%BC%9A%E7%BB%99%20Hexo%20%E5%8D%9A%E5%AE%A2%E4%B8%80%E4%B8%AA%E8%83%BD%E8%87%AA%E5%8A%A8%E4%B8%8A%E4%BC%A0%E5%9B%BE%E5%BA%8A%E7%9A%84%E6%9C%AC%E5%9C%B0%20Markdown%20%E7%BC%96%E8%BE%91%E5%99%A8/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=写作台：给 Hexo 博客一个能自动上传图床的本地 Markdown 编辑器&amp;url=http://kudryavka.top/2026/11/04/%E5%86%99%E4%BD%9C%E5%8F%B0%EF%BC%9A%E7%BB%99%20Hexo%20%E5%8D%9A%E5%AE%A2%E4%B8%80%E4%B8%AA%E8%83%BD%E8%87%AA%E5%8A%A8%E4%B8%8A%E4%BC%A0%E5%9B%BE%E5%BA%8A%E7%9A%84%E6%9C%AC%E5%9C%B0%20Markdown%20%E7%BC%96%E8%BE%91%E5%99%A8/&amp;pic=https://picture.zejiewdp.kdns.fr/file/1793727777643_Gemini_Generated_Image_wbz568wbz568wbz5.png" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://kudryavka.top" target="_blank">能美的秘密据点</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/Hexo/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>Hexo<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>开源项目<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/%E5%8D%9A%E5%AE%A2%E5%B7%A5%E5%85%B7/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>博客工具<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/%E5%9B%BE%E5%BA%8A/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>图床<span class="tagsPageCount">1</span></a><a class="post-meta__box__tags" href="/tags/Markdown/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>Markdown<span class="tagsPageCount">1</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="https://picture.zejiewdp.kdns.fr/file/1793727777643_Gemini_Generated_Image_wbz568wbz568wbz5.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2026/11/03/cloudflare-imgbed2.0%E4%B8%8A%E7%BA%BF/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cloudflare-imgbed-dxy.pages.dev/file/1793711913389_bed.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">cloudflare-imgbed2.0上线</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info__sayhi" id="author-info__sayhi" onclick="anzhiyu.changeSayHelloText()"></div><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cloudflare-imgbed-dxy.pages.dev/file/1745821252742_12.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-status"><img class="g-status" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cloudflare-imgbed-dxy.pages.dev/file/1745948553807_m09.gif" alt="status"/></div></div><div class="author-info__description">BLOG、分享、日常、记录、技术交流、项目存储、休闲娱乐</div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">zejiew</h1><div class="author-info__desc">zejiew的记事本</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/zejiew" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a><a class="social-icon faa-parent animated-hover" href="https://space.bilibili.com/4954519" target="_blank" title="BiliBili"><i class="anzhiyufont anzhiyu-icon-bilibili"></i></a></div></div></div></div><div class="card-widget anzhiyu-right-widget" id="card-wechat" onclick="null"><div id="flip-wrapper"><div id="flip-content"><div class="face" style="background: url(https://bu.dusays.com/2023/01/13/63c02edf44033.png) center center / 100% no-repeat"></div><div class="back face" style="background: url(https://cloudflare-imgbed-dxy.pages.dev/file/1745865521232_gzhcode11.png) center center / 100% no-repeat"></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2%EF%BC%9A%E5%86%99%E5%8D%9A%E5%AE%A2%E6%9C%80%E7%83%A6%E7%9A%84%E5%85%B6%E5%AE%9E%E6%98%AF%E9%85%8D%E5%9B%BE"><span class="toc-number">1.</span> <span class="toc-text">写在前面：写博客最烦的其实是配图</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%83%E9%95%BF%E4%BB%80%E4%B9%88%E6%A0%B7"><span class="toc-number">2.</span> <span class="toc-text">它长什么样</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%B0%E4%B8%80%E9%81%8D%E5%AE%8C%E6%95%B4%E6%B5%81%E7%A8%8B"><span class="toc-number">3.</span> <span class="toc-text">走一遍完整流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#26-%E4%B8%AA-front-matter-%E5%AD%97%E6%AE%B5%EF%BC%8C%E7%BB%88%E4%BA%8E%E4%B8%8D%E7%94%A8%E8%83%8C%E4%BA%86"><span class="toc-number">4.</span> <span class="toc-text">26 个 front-matter 字段，终于不用背了</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9D%9E%E8%A6%81%E8%B5%B7%E4%B8%80%E4%B8%AA%E6%9C%AC%E5%9C%B0%E6%9C%8D%E5%8A%A1%EF%BC%9F"><span class="toc-number">5.</span> <span class="toc-text">为什么非要起一个本地服务？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%91%E5%B8%83%E6%97%A5%E5%BF%97%EF%BC%9A%E7%BB%95%E5%BC%80%E7%AE%A1%E9%81%93%E8%B8%A9%E8%BF%87%E7%9A%84%E5%9D%91"><span class="toc-number">6.</span> <span class="toc-text">发布日志：绕开管道踩过的坑</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E4%B8%80%E6%AC%A1%EF%BC%8C%E4%B9%8B%E5%90%8E%E5%B0%B1%E5%BF%98%E4%BA%86%E5%AE%83"><span class="toc-number">7.</span> <span class="toc-text">配置一次，之后就忘了它</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E6%95%B0%E6%8D%AE%E5%AE%89%E5%85%A8%EF%BC%8C%E8%AF%B4%E5%87%A0%E5%8F%A5%E5%AE%9E%E8%AF%9D"><span class="toc-number">8.</span> <span class="toc-text">关于数据安全，说几句实话</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%98%E6%9C%89%E4%B8%A4%E4%B8%AA%E8%87%AA%E6%B5%8B"><span class="toc-number">9.</span> <span class="toc-text">还有两个自测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%8E%E4%B9%88%E7%94%A8%E8%B5%B7%E6%9D%A5"><span class="toc-number">10.</span> <span class="toc-text">怎么用起来</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E9%99%85%E6%95%88%E6%9E%9C"><span class="toc-number">11.</span> <span class="toc-text">实际效果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%90%8E"><span class="toc-number">12.</span> <span class="toc-text">最后</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/11/04/%E5%86%99%E4%BD%9C%E5%8F%B0%EF%BC%9A%E7%BB%99%20Hexo%20%E5%8D%9A%E5%AE%A2%E4%B8%80%E4%B8%AA%E8%83%BD%E8%87%AA%E5%8A%A8%E4%B8%8A%E4%BC%A0%E5%9B%BE%E5%BA%8A%E7%9A%84%E6%9C%AC%E5%9C%B0%20Markdown%20%E7%BC%96%E8%BE%91%E5%99%A8/" title="写作台：给 Hexo 博客一个能自动上传图床的本地 Markdown 编辑器"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://picture.zejiewdp.kdns.fr/file/1793727777643_Gemini_Generated_Image_wbz568wbz568wbz5.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="写作台：给 Hexo 博客一个能自动上传图床的本地 Markdown 编辑器"/></a><div class="content"><a class="title" href="/2026/11/04/%E5%86%99%E4%BD%9C%E5%8F%B0%EF%BC%9A%E7%BB%99%20Hexo%20%E5%8D%9A%E5%AE%A2%E4%B8%80%E4%B8%AA%E8%83%BD%E8%87%AA%E5%8A%A8%E4%B8%8A%E4%BC%A0%E5%9B%BE%E5%BA%8A%E7%9A%84%E6%9C%AC%E5%9C%B0%20Markdown%20%E7%BC%96%E8%BE%91%E5%99%A8/" title="写作台：给 Hexo 博客一个能自动上传图床的本地 Markdown 编辑器">写作台：给 Hexo 博客一个能自动上传图床的本地 Markdown 编辑器</a><time datetime="2026-11-03T17:20:00.000Z" title="发表于 2026-11-04 01:20:00">2026-11-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/11/03/cloudflare-imgbed2.0%E4%B8%8A%E7%BA%BF/" title="cloudflare-imgbed2.0上线"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cloudflare-imgbed-dxy.pages.dev/file/1793711913389_bed.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="cloudflare-imgbed2.0上线"/></a><div class="content"><a class="title" href="/2026/11/03/cloudflare-imgbed2.0%E4%B8%8A%E7%BA%BF/" title="cloudflare-imgbed2.0上线">cloudflare-imgbed2.0上线</a><time datetime="2026-11-02T16:00:00.000Z" title="发表于 2026-11-03 00:00:00">2026-11-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/11/03/%E6%B5%8B%E8%AF%95%E8%BE%85%E5%8A%A9%E5%8F%91%E5%B8%83%E8%BD%AF%E4%BB%B6/" title="测试文章"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cloudflare-imgbed-dxy.pages.dev/file/1793660827000_1667891136410.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="测试文章"/></a><div class="content"><a class="title" href="/2026/11/03/%E6%B5%8B%E8%AF%95%E8%BE%85%E5%8A%A9%E5%8F%91%E5%B8%83%E8%BD%AF%E4%BB%B6/" title="测试文章">测试文章</a><time datetime="2026-11-02T16:00:00.000Z" title="发表于 2026-11-03 00:00:00">2026-11-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/08/16/%E4%BF%AE%E5%A4%8D%E5%8F%B3%E9%94%AE%E6%96%B0%E5%BB%BAtxt/" title="修复安装MyBase后右键新建TXT变成RTF的问题"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img1.tucang.cc/api/image/show/794f848059370689759f8409a88a9152" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="修复安装MyBase后右键新建TXT变成RTF的问题"/></a><div class="content"><a class="title" href="/2026/08/16/%E4%BF%AE%E5%A4%8D%E5%8F%B3%E9%94%AE%E6%96%B0%E5%BB%BAtxt/" title="修复安装MyBase后右键新建TXT变成RTF的问题">修复安装MyBase后右键新建TXT变成RTF的问题</a><time datetime="2026-08-16T10:55:00.000Z" title="发表于 2026-08-16 18:55:00">2026-08-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/01/14/%E6%AC%A7%E5%8A%A0%E7%9C%9F%E6%B7%B1%E5%BA%A6%E5%88%B7%E6%9C%BA9008%E6%AD%A5%E9%AA%A4%E6%B1%87%E6%80%BB/" title="欧加真深度刷机9008步骤汇总"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://img1.tucang.cc/api/image/show/794f848059370689759f8409a88a9152" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="欧加真深度刷机9008步骤汇总"/></a><div class="content"><a class="title" href="/2026/01/14/%E6%AC%A7%E5%8A%A0%E7%9C%9F%E6%B7%B1%E5%BA%A6%E5%88%B7%E6%9C%BA9008%E6%AD%A5%E9%AA%A4%E6%B1%87%E6%80%BB/" title="欧加真深度刷机9008步骤汇总">欧加真深度刷机9008步骤汇总</a><time datetime="2026-01-13T17:15:03.000Z" title="发表于 2026-01-14 01:15:03">2026-01-14</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="workboard"><img class="workSituationImg boardsign" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://twikoo-magic.oss-cn-hangzhou.aliyuncs.com/HONKAI3-Stan/a0a41607578a6286f8d245338addd0d41bbd609b.gif" alt="如果不开心，请小猫蹭蹭你。" title="如果不开心，请小猫蹭蹭你。"/><div id="runtimeTextTip"></div></div><p id="ghbdages"><a class="github-badge" target="_blank" href="https://hexo.io/" style="margin-inline:5px" data-title="博客框架为Hexo_v5.4.0" title="博客框架为Hexo_v5.4.0"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.1.5/img/badge/Frame-Hexo.svg" alt="博客框架为Hexo_v5.4.0"/></a><a class="github-badge" target="_blank" href="https://blog.anheyu.com/" style="margin-inline:5px" data-title="本站基于anzhiyu主题修改" title="本站基于anzhiyu主题修改"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.9/img/Theme-AnZhiYu-2E67D3.svg" alt="本站基于anzhiyu主题修改"/></a><a class="github-badge" target="_blank" href="https://github.com/" style="margin-inline:5px" data-title="本站项目由Github托管，部署于cloudflare page，由cloudflare提供CDN加速" title="本站项目由Github托管，部署于cloudflare page，由cloudflare提供CDN加速"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.1.5/img/badge/Source-Github.svg" alt="本站项目由Github托管，部署于cloudflare page，由cloudflare提供CDN加速"/></a><a class="github-badge" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" style="margin-inline:5px" data-title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.2.0/img/badge/Copyright-BY-NC-SA.svg" alt="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"/></a></p></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2023 - 2026 By <a class="footer-bar-link" href="/" title="zejiew" target="_blank">zejiew</a></div></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">12</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">22</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">3</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">能美的秘密据点</div><div class="back-menu-list"><a class="back-menu-item" href="https://kudryavka.top" title="能美的秘密据点"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="能美的秘密据点"/><span class="back-menu-item-text">能美的秘密据点</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">小工具项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://image.anheyu.com/" title="日后整理"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://image.anheyu.com/favicon.ico" alt="日后整理"/><span class="back-menu-item-text">日后整理</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 要闻直通</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友情链接</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 休闲娱乐</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=18541680699&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 趣闻闲语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/Hexo/" style="font-size: 0.88rem;">Hexo<sup>1</sup></a><a href="/tags/Markdown/" style="font-size: 0.88rem;">Markdown<sup>1</sup></a><a href="/tags/Windows/" style="font-size: 0.88rem;">Windows<sup>1</sup></a><a href="/tags/%E4%BC%98%E5%8C%96/" style="font-size: 0.88rem;">优化<sup>1</sup></a><a href="/tags/%E5%85%8D%E8%B4%B9%E5%B7%A5%E5%85%B7/" style="font-size: 0.88rem;">免费工具<sup>2</sup></a><a href="/tags/%E5%8D%9A%E5%AE%A2%E5%B7%A5%E5%85%B7/" style="font-size: 0.88rem;">博客工具<sup>1</sup></a><a href="/tags/%E5%9B%BE%E5%BA%8A/" style="font-size: 0.88rem;">图床<sup>1</sup></a><a href="/tags/%E5%AE%98%E6%96%B9/" style="font-size: 0.88rem;">官方<sup>1</sup></a><a href="/tags/%E5%BC%80%E6%BA%90%E5%B7%A5%E5%85%B7/" style="font-size: 0.88rem;">开源工具<sup>1</sup></a><a href="/tags/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/" style="font-size: 0.88rem;">开源项目<sup>1</sup></a><a href="/tags/%E6%89%8B%E6%9C%BA%E5%88%B7%E6%9C%BA/" style="font-size: 0.88rem;">手机刷机<sup>1</sup></a><a href="/tags/%E6%95%88%E7%8E%87/" style="font-size: 0.88rem;">效率<sup>1</sup></a><a href="/tags/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7/" style="font-size: 0.88rem;">效率工具<sup>1</sup></a><a href="/tags/%E6%95%91%E6%8F%B4/" style="font-size: 0.88rem;">救援<sup>1</sup></a><a href="/tags/%E6%95%99%E7%A8%8B%E6%95%B4%E7%90%86/" style="font-size: 0.88rem;">教程整理<sup>1</sup></a><a href="/tags/%E6%B3%A8%E5%86%8C%E8%A1%A8/" style="font-size: 0.88rem;">注册表<sup>1</sup></a><a href="/tags/%E6%B5%8B%E8%AF%95/" style="font-size: 0.88rem;">测试<sup>1</sup></a><a href="/tags/%E7%94%B5%E8%84%91%E5%B7%A5%E5%85%B7/" style="font-size: 0.88rem;">电脑工具<sup>3</sup></a><a href="/tags/%E7%A1%AC%E7%9B%98%E6%B8%85%E7%90%86/" style="font-size: 0.88rem;">硬盘清理<sup>1</sup></a><a href="/tags/%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85/" style="font-size: 0.88rem;">系统安装<sup>4</sup></a><a href="/tags/%E8%BD%AF%E4%BB%B6%E6%8E%A8%E8%8D%90/" style="font-size: 0.88rem;">软件推荐<sup>1</sup></a><a href="/tags/%E9%A1%B9%E7%9B%AE/" style="font-size: 0.88rem;">项目<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="18541680699" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.7"></meting-js></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="anzhiyufont anzhiyu-icon-xmark"></i></button></nav><div class="is-center" id="loading-database"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-pulse-icon"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://music.163.com/#/playlist?id=18541680699&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("04/03/2023 00:00:00"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2023 By 安知鱼 V1.6.14",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 zejiew 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><script async="async">(function () {
+  var grt = new Date("04/03/2023 00:00:00"); //设置网站上线时间
+  var now = new Date();
+  var dnum;
+  var hnum;
+  var mnum;
+  var snum;
+  var nowHour;
+
+  // 计算并更新天数、小时数、分钟数和秒数
+  function updateTime() {
+    now = new Date(); // 更新 now 的值
+    nowHour = now.getHours(); // 更新 nowHour 的值
+    var days = (now - grt) / 1000 / 60 / 60 / 24;
+    dnum = Math.floor(days);
+    var hours = (now - grt) / 1000 / 60 / 60 - 24 * dnum;
+    hnum = Math.floor(hours);
+    if (String(hnum).length == 1) {
+      hnum = "0" + hnum;
+    }
+    var minutes = (now - grt) / 1000 / 60 - 24 * 60 * dnum - 60 * hnum;
+    mnum = Math.floor(minutes);
+    if (String(mnum).length == 1) {
+      mnum = "0" + mnum;
+    }
+    var seconds = (now - grt) / 1000 - 24 * 60 * 60 * dnum - 60 * 60 * hnum - 60 * mnum;
+    snum = Math.round(seconds);
+    if (String(snum).length == 1) {
+      snum = "0" + snum;
+    }
+  }
+
+  // 更新网页中显示的网站运行时间
+  function updateHtml() {
+    const footer = document.getElementById("footer");
+    if (!footer) return
+    let currentTimeHtml = "";
+    if (nowHour < 18 && nowHour >= 9) {
+      // 如果是上班时间，默认就是"安知鱼-上班摸鱼中.svg"图片，不需要更改
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    } else {
+      // 如果是下班时间，插入"安知鱼-下班啦.svg"图片
+      let img = document.querySelector("#workboard .workSituationImg");
+      if (img != null) {
+        img.src = "https://twikoo-magic.oss-cn-hangzhou.aliyuncs.com/HONKAI3-Stan/70677f9c51bd601e60881da47d77a4e6189ad895.gif";
+        img.title = "人就该开开心心的玩耍，嘿嘿~";
+        img.alt = "人就该开开心心的玩耍，嘿嘿~";
+      }
+
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    }
+
+    if (document.getElementById("runtimeTextTip")) {
+      document.getElementById("runtimeTextTip").innerHTML = currentTimeHtml;
+    }
+  }
+
+  setInterval(() => {
+    updateTime();
+    updateHtml();
+  }, 1000);
+})();</script><script src="/js/search/local-search.js"></script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>
