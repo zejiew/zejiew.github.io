@@ -20392,6 +20392,56 @@ html.hide-aside .layout > div:first-child {
   }
 }
 
+/* ============================================================
+   顶部长图统一观感：闲言趣语 / 相册集 / 相册详情
+   1. 同一高度与焦点，避免同一张图在桌面和手机被裁成两种样子
+   2. 左侧压暗层 + 底部压暗层，保证白色标题在任何底图上都读得清
+   3. 不依赖模板改动，换图只需改 essay.yml / album 的 index.md
+   ============================================================ */
+.author-content.author-content-item.essayPage,
+.author-content.author-content-item.album.single,
+#single_top .author-content.author-content-item.single {
+  height: 18rem !important;
+  background-position: center 32% !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+}
+
+/* 压暗层：左边重、中间过渡、右边基本不动，照片主体仍然透得出来 */
+.author-content.author-content-item.essayPage::before,
+.author-content.author-content-item.album.single::before,
+#single_top .author-content.author-content-item.single::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg,
+      rgba(0, 0, 0, 0.62) 0%,
+      rgba(0, 0, 0, 0.44) 30%,
+      rgba(0, 0, 0, 0.14) 54%,
+      rgba(0, 0, 0, 0) 72%),
+    linear-gradient(0deg, rgba(0, 0, 0, 0.34) 0%, rgba(0, 0, 0, 0) 46%);
+}
+
+/* 标题加一点投影，小图/亮图也不会发虚 */
+.author-content.author-content-item.essayPage .author-content-item-title,
+.author-content.author-content-item.album.single .author-content-item-title,
+#single_top .author-content.author-content-item.single .author-content-item-title {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+
+/* 手机端：降低高度、焦点再往上一点，别把主体裁没 */
+@media screen and (max-width: 768px) {
+  .author-content.author-content-item.essayPage,
+  .author-content.author-content-item.album.single,
+  #single_top .author-content.author-content-item.single {
+    height: 13rem !important;
+    background-position: center 28% !important;
+  }
+}
+
 #aside-content .card-widget#card-wechat {
   background: #57bd6a;
   display: flex;
