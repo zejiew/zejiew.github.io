@@ -1,3 +1,9 @@
+// Meting 接口兜底：若主题配置里没有写 meting_api，MetingJS 会回落到早已失效的
+// api.i-meto.com（403 + 无 CORS），导致音乐馆整页空白、左下角音乐球也不显示。
+// 这里在 MetingJS 加载前先给一个可用的公共接口，配置里写了就以配置为准。
+window.meting_api =
+  window.meting_api || "https://api.injahow.cn/meting/?server=:server&type=:type&id=:id&r=:r";
+
 const anzhiyu = {
   debounce: (func, wait = 0, immediate = false) => {
     let timeout;
@@ -818,6 +824,7 @@ const anzhiyu = {
       anMusicBg.style.backgroundImage = musiccover.style.backgroundImage;
     } else {
       // 第一次进入，绑定事件，改背景
+      let tries = 0;
       let timer = setInterval(() => {
         const musiccover = document.querySelector("#anMusic-page .aplayer-pic");
         // 确保player加载完成
@@ -834,6 +841,15 @@ const anzhiyu = {
             !document.querySelector("#nav-music meting-js").aplayer.audio.paused
           ) {
             anzhiyu.musicToggle();
+          }
+        } else if (++tries > 300) {
+          // 30 秒还没渲染出播放器，基本可以判定 Meting 接口不可用：
+          // 停下空转的轮询，并给出提示，避免只剩一片黑。
+          clearInterval(timer);
+          const metingBox = document.getElementById("anMusic-page-meting");
+          if (metingBox && !metingBox.querySelector(".aplayer")) {
+            metingBox.innerHTML =
+              '<div style="color:#fff;text-align:center;padding:40px 20px;font-size:15px;opacity:.85">音乐列表加载失败，可能是音乐接口暂时不可用，请稍后刷新重试</div>';
           }
         }
       }, 100);
