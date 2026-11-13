@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>工厂物料台账软件</title>
+      <link href="/2026/11/13/%E5%B7%A5%E5%8E%82%E7%89%A9%E6%96%99%E5%8F%B0%E8%B4%A6%E8%BD%AF%E4%BB%B6/"/>
+      <url>/2026/11/13/%E5%B7%A5%E5%8E%82%E7%89%A9%E6%96%99%E5%8F%B0%E8%B4%A6%E8%BD%AF%E4%BB%B6/</url>
+      
+        <content type="html"><![CDATA[<p>一个简单的记录代工厂材料库存的软件。可以配合CSV-backup借口进行云端的自动备份或者同步到本地。</p><p>项目地址:<a href="https://github.com/zejiew/factory-konw">https://github.com/zejiew/factory-konw</a></p><h1 id="代工厂物料台账"><a href="#代工厂物料台账" class="headerlink" title="代工厂物料台账"></a>代工厂物料台账</h1><p>记录「我存在代工厂的物料还有多少」的本地小工具。全部数据存在你自己的电脑上，不联网、不注册、不上传。</p><h2 id="怎么启动"><a href="#怎么启动" class="headerlink" title="怎么启动"></a>怎么启动</h2><p>双击 **<code>启动.bat</code>**。</p><p>需要电脑上有 Python 3（一般装过就有）。如果双击没反应，看下面的「打不开怎么办」。</p><blockquote><p><strong>第一次用，先清掉演示数据</strong><br>现在里面塞了几条假的示例（不锈钢板、纸箱等），是给你看效果用的。<br>双击 **<code>清空演示数据.bat</code>**，它会把这些挪到 <code>旧数据\</code> 文件夹里（不直接删，反悔还能拿回来），<br>然后重新打开程序，就是一个干干净净的空账本。<br>建议顺序：先清空 → 去「材料字典」建你自己的材料 → 去「代工厂」建厂 → 开始记账。</p></blockquote><h2 id="五个页签"><a href="#五个页签" class="headerlink" title="五个页签"></a>五个页签</h2><h3 id="1-库存总览"><a href="#1-库存总览" class="headerlink" title="1. 库存总览"></a>1. 库存总览</h3><p>打开就能看见：每种材料现在还剩多少，分别存在哪个厂。</p><ul><li>点材料前面的小三角能展开，看到<strong>每个厂各存了多少</strong>。</li><li>开了「区分良品&#x2F;不良品」的材料，会显示 <strong>良品 xx ／ 不良品 xx</strong>，<br>括号里是总数（总数 &#x3D; 良品 + 不良品）。</li><li>红色那行 &#x3D; 该材料的总结存已经低于你设的安全库存，该补货了。</li><li>上面四个数字：在册材料 &#x2F; 代工厂 &#x2F; 有结存的材料 &#x2F; 有效流水笔数。</li><li>右上「排序」可以按材料名、结存多少、最近变动排。</li><li>右上「导出库存」把当前这张表存成 Excel 能直接打开的 CSV。</li></ul><h3 id="2-出入库（日常主要用这页）"><a href="#2-出入库（日常主要用这页）" class="headerlink" title="2. 出入库（日常主要用这页）"></a>2. 出入库（日常主要用这页）</h3><p>记一笔就填这张表：</p><table><thead><tr><th>类型</th><th>什么时候用</th></tr></thead><tbody><tr><td><strong>入库</strong></td><td>往代工厂送了料</td></tr><tr><td><strong>消耗</strong></td><td>生产用掉了料 ← 你说的“扣减”就是这个</td></tr><tr><td><strong>退回</strong></td><td>料从代工厂拉回来了</td></tr><tr><td><strong>盘点</strong></td><td>实地数了一遍，填实际数量，系统自动算差额</td></tr></tbody></table><ul><li>选好材料，右边会显示<strong>该厂当前结存</strong>，方便你核对着填。</li><li>数量填正数就行，加减由类型决定，不用自己带负号。</li><li>时间默认现在，可以改成补记的日期。</li><li>如果消耗的数量超过现有结存，会弹窗让你确认，防止手滑多打一个零。</li><li>提交后下面「今天记的账」立刻刷新，记错了当场就能作废。</li></ul><h3 id="3-流水明细"><a href="#3-流水明细" class="headerlink" title="3. 流水明细"></a>3. 流水明细</h3><p>所有历史记录都在这。可以按时间段（今天&#x2F;本月&#x2F;全部&#x2F;自选）、类型、材料、代工厂、关键词筛。</p><ul><li>结算行在最底下：共多少条、总共入多少、出多少。</li><li>导出 CSV 按当前筛选条件导出。</li></ul><p><strong>「作废」和「删除」不一样，别点错</strong>：</p><table><thead><tr><th></th><th>作废</th><th>删除</th></tr></thead><tbody><tr><td>还留在列表里吗</td><td>✅ 留着，能看到</td><td>❌ 从列表拿走</td></tr><tr><td>算进结存吗</td><td>❌ 不算</td><td>❌ 不算</td></tr><tr><td>能反悔吗</td><td>✅ 点「恢复选中」</td><td>✅ 去「回收站」恢复</td></tr><tr><td>什么时候用</td><td>这笔记错了，但想留个痕迹备查</td><td>这笔记错了，不想再看到它</td></tr></tbody></table><ul><li><strong>作废选中</strong>：勾「含已作废」能看到它们，作废错的可以「恢复选中」。</li><li><strong>删除选中</strong>：删除前会弹窗列出要删的记录和数量，确认后才删。</li><li><strong>回收站</strong>：点这个按钮打开新窗口，能看到所有已删除的记录，<br>可以「恢复选中」拿回列表，或「彻底删除选中」永久清除。</li></ul><blockquote><p>关于彻底删除：删掉之后无法恢复。另外如果你开了多端同步，<br>其他设备上的这些记录还在，下次同步可能会把它们再带回来——<br>彻底删除只在当前这台电脑上生效。</p></blockquote><h3 id="4-材料字典"><a href="#4-材料字典" class="headerlink" title="4. 材料字典"></a>4. 材料字典</h3><p>先把材料建好，出入库时才能选。</p><ul><li>材料名 + 规格 唯一确定一种料（比如「不锈钢板 &#x2F; 304 &#x2F; 2mm」和「不锈钢板 &#x2F; 304 &#x2F; 3mm」是两种）。</li><li><strong>安全库存</strong>：低于它就变红提醒。留空 &#x3D; 不提醒。</li><li><strong>区分良品 &#x2F; 不良品</strong>（可选）：勾上后，记每一笔账时可以选这笔是良品还是不良品，<br>总览里会分别统计。<strong>仓库总数始终 &#x3D; 良品 + 不良品</strong>，两个数字不会互相打架。<br>不勾就是普通记法，跟以前完全一样。</li><li>不用了的材料点「停用」，下拉框里就不出现了，但历史记录和结存都保留。</li></ul><p><strong>关于良品&#x2F;不良品的几个细节</strong>：</p><ul><li>默认<strong>不勾选</strong>，所以老材料、老数据不受任何影响。</li><li>盘点时按「同品质」算差额——盘良品不会把不良品的数量算成差异。</li><li>消耗时如果超过该品质的结存，会单独提示（比如「良品的结存只有 50，你要扣 80」）。</li><li>后来想关掉也行：已记的品质数据保留，只是之后不再让你选。</li></ul><h3 id="5-代工厂"><a href="#5-代工厂" class="headerlink" title="5. 代工厂"></a>5. 代工厂</h3><p>记录厂名、联系人、备注。</p><table><thead><tr><th>操作</th><th>效果</th><th>什么时候用</th></tr></thead><tbody><tr><td><strong>停用 &#x2F; 启用</strong></td><td>从下拉框里藏起来，列表里还在，随时能启用</td><td>这个厂暂时不合作了</td></tr><tr><td><strong>删除</strong></td><td>从列表里拿走，勾「显示已删除」才看得到</td><td>这个厂建错了 &#x2F; 已经不合作且不想再看到</td></tr></tbody></table><ul><li>停用的厂同样只是从下拉框隐藏，历史记录和结存一分不少。</li><li><strong>删除不做真实删除</strong>，只是打标记，勾上右上角「显示已删除」就能看到它们（灰色、状态列写「已删除」），<br>选中后点「恢复选中」就能拿回来。</li><li><strong>名下还有有效流水的厂删不掉</strong>。删了厂，那些账就无所属了（总览里会变成「(已删除)」），<br>所以会先拦下来并告诉你还有几条。想去掉它，先把那些流水在「流水明细」里作废&#x2F;删除，再来删厂；<br>如果只是不想在下拉框看到，用「停用」就够了。</li><li>已删的厂，它的历史流水仍然记得厂名——查账、导 CSV 都不受影响。</li><li>同一个厂名重新新增时不会报「已存在」，而是直接把原来那条恢复成在用（不会出现两条同名厂）。</li></ul><h3 id="6-云端备份（可选，默认关闭）"><a href="#6-云端备份（可选，默认关闭）" class="headerlink" title="6. 云端备份（可选，默认关闭）"></a>6. 云端备份（可选，默认关闭）</h3><p><strong>这个功能完全可以不用，本地记账一直都能用。</strong></p><p>打开后，每次记账保存都会在后台把这个账本的 CSV 快照传一份到你自己的备份柜，<br>相当于多一层保险。传失败只影响备份，绝不影响本地数据。</p><p><img src="/%E6%88%AA%E5%9B%BE/7-%E4%BA%91%E7%AB%AF%E5%A4%87%E4%BB%BD-%E6%9C%AA%E9%85%8D%E7%BD%AE.png" alt="云端备份-未配置"></p><p>设置步骤：</p><ol><li>填「备份地址」（形如 <code>https://xxx.example.com</code>，不用带 <code>/api</code>）</li><li>填「访问密码」</li><li>勾上「启用云端备份」</li><li>点「保存设置」</li><li>点「测试连接」，看到「连接正常」就通了</li></ol><p>几个开关的意思：</p><table><thead><tr><th>控件</th><th>作用</th></tr></thead><tbody><tr><td><strong>启用云端备份</strong></td><td>总开关。关着的时候程序完全不会联网</td></tr><tr><td><strong>记账后自动上传</strong></td><td>开着＝每次记完账自动传；关掉＝只在你点按钮时传</td></tr><tr><td><strong>上传内容</strong></td><td>「全部数据」含库存+材料+代工厂+全部流水；「只要当前库存」更小</td></tr><tr><td><strong>立即备份一次</strong></td><td>不管开关状态，当场传一次</td></tr><tr><td><strong>测试连接</strong></td><td>只登录看云端有几个文件，不传数据</td></tr></tbody></table><p><strong>关于文件名</strong>：每次备份用带时间戳的新名字（如 <code>代工厂物料台账_20261112_053041.csv</code>），<br>所以在网页上能看到一串按时间排列的历史备份，想回到某个时刻的账就下那一份。</p><p><strong>关于凭据</strong>：地址和密码存在本地 <code>data\inventory.db</code> 的 <code>settings</code> 表里，<br>不写进任何源码或配置文件，导出的 CSV 里也不会带出去。想彻底断开就清空地址或关掉开关。</p><h3 id="7-多端同步（两台电脑共用一本账）"><a href="#7-多端同步（两台电脑共用一本账）" class="headerlink" title="7. 多端同步（两台电脑共用一本账）"></a>7. 多端同步（两台电脑共用一本账）</h3><p>在「云端备份」页下半部分，有两个按钮：</p><table><thead><tr><th>按钮</th><th>作用</th></tr></thead><tbody><tr><td><strong>上传本机数据到云端</strong></td><td>把本机现在这本账打包传上去，覆盖云端那份同步包</td></tr><tr><td><strong>从云端同步</strong></td><td>下载云端同步包，与本地合并</td></tr></tbody></table><p><strong>推荐用法</strong>（两台都会记账时）：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">公司电脑：记完账 → 点「上传本机数据到云端」</span><br><span class="line">家里电脑：点「从云端同步」→ 看到预览 → 确认</span><br></pre></td></tr></table></figure><p>然后反过来再做一次，两边就都有全部数据了。</p><p><strong>为什么不会互相覆盖</strong>：每条数据都有全局唯一 ID，合并时按 ID 比对：</p><ul><li>云端有、本地没有 → 加进来</li><li>两边都有 → 谁改得晚用谁的</li></ul><p>所以 A 电脑的流水和 B 电脑的流水会<strong>合并在一起</strong>，不是一边吃掉另一边。</p><p><strong>删掉的数据不会复活</strong>：作废&#x2F;删除是打标记而不是真删，另一端同步时会看到这个标记，<br>不会把已删的又导回来。</p><p><strong>关于冲突</strong>：极端情况下（两端同一时刻改了同一条），后保存的赢。日常记账基本碰不到，<br>因为记账本来就是各记各的流水。</p><h2 id="数据存在哪"><a href="#数据存在哪" class="headerlink" title="数据存在哪"></a>数据存在哪</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">data\inventory.db          ← 你的全部数据，就这一个文件</span><br><span class="line">data\backups\              ← 每次关窗口自动备份，留最近 30 份</span><br></pre></td></tr></table></figure><p><strong>备份方法</strong>：直接复制 <code>data</code> 整个文件夹到你 U 盘或网盘就行。<br><strong>换电脑</strong>：把 <code>data</code> 文件夹拷过去，放在程序同目录下即可。<br><strong>恢复</strong>：把 <code>data\backups\</code> 里某一份 <code>.db</code> 改名为 <code>inventory.db</code> 覆盖回去。</p><h2 id="打不开怎么办"><a href="#打不开怎么办" class="headerlink" title="打不开怎么办"></a>打不开怎么办</h2><ol><li>命令行进到这个文件夹，运行 <code>python main.py</code>，看报错信息。</li><li>报错内容也会自动记到 <code>data\error.log</code>。</li><li>最常见的原因是没装 Python。装的时候记得勾上 <strong>Add Python to PATH</strong>。</li></ol><h2 id="文件说明"><a href="#文件说明" class="headerlink" title="文件说明"></a>文件说明</h2><table><thead><tr><th>文件</th><th>作用</th></tr></thead><tbody><tr><td><code>main.py</code></td><td>启动入口</td></tr><tr><td><code>ui.py</code></td><td>界面</td></tr><tr><td><code>db.py</code></td><td>数据存取（SQLite）</td></tr><tr><td><code>sync.py</code></td><td>多端同步引擎（导出 &#x2F; 预览 &#x2F; 合并）</td></tr><tr><td><code>cloud.py</code></td><td>云端备份与同步传输（可选，不配置就不生效）</td></tr><tr><td><code>test_db.py</code></td><td>数据层自测，<code>python test_db.py</code> 可跑</td></tr><tr><td><code>test_quality.py</code></td><td>良品&#x2F;不良品逻辑自测，<code>python test_quality.py</code> 可跑</td></tr><tr><td><code>test_sync.py</code></td><td>多端同步自测（模拟两台电脑），<code>python test_sync.py</code> 可跑</td></tr><tr><td><code>test_delete.py</code></td><td>删除&#x2F;回收站自测，<code>python test_delete.py</code> 可跑</td></tr><tr><td><code>test_factory_delete.py</code></td><td>删除代工厂自测，<code>python test_factory_delete.py</code> 可跑</td></tr><tr><td><code>test_cloud.py</code></td><td>备份逻辑自测，<code>python test_cloud.py</code> 可跑</td></tr><tr><td><code>test_ui.py</code></td><td>界面冒烟测试，<code>python test_ui.py</code> 可跑</td></tr><tr><td><code>_seed_demo.py</code></td><td>塞演示数据（正式用前先删掉 data 文件夹再重启就是空的）</td></tr><tr><td><code>csv-backup/</code></td><td>备份柜服务端的源码（跟这个记账程序无关，可删）</td></tr></tbody></table><h2 id="一个设计上的说明"><a href="#一个设计上的说明" class="headerlink" title="一个设计上的说明"></a>一个设计上的说明</h2><p><strong>库存数字不是单独存的，是由所有流水加出来的。</strong></p><p>好处是：流水和结存永远对得上，不可能出现「改了流水但库存忘了改」这种账实不符。任何一条记错了，作废它，结存自动跟着回滚。</p><p>代价是：流水特别多（几万条以上）时，总览会稍慢一点。正常小厂用量几年内不会有这个问题。<br><img src="https://picture.zejiewdp.kdns.fr/file/1794573092313_1-%E5%BA%93%E5%AD%98%E6%80%BB%E8%A7%88.png" alt="1-库存总览"><br><img src="https://picture.zejiewdp.kdns.fr/file/1794573095612_2-%E5%87%BA%E5%85%A5%E5%BA%93.png" alt="2-出入库"><br><img src="https://picture.zejiewdp.kdns.fr/file/1794573092597_3-%E6%B5%81%E6%B0%B4%E6%98%8E%E7%BB%86.png" alt="3-流水明细"><br><img src="https://picture.zejiewdp.kdns.fr/file/1794573099850_4-%E6%9D%90%E6%96%99%E5%AD%97%E5%85%B8.png" alt="4-材料字典"><br><img src="https://picture.zejiewdp.kdns.fr/file/1794573097997_5-%E4%BB%A3%E5%B7%A5%E5%8E%82.png" alt="5-代工厂"><br><img src="https://picture.zejiewdp.kdns.fr/file/1794573104803_6-%E5%BC%B9%E7%AA%97.png" alt="6-弹窗"><br><img src="https://picture.zejiewdp.kdns.fr/file/1794573100809_7-%E4%BA%91%E7%AB%AF%E5%A4%87%E4%BB%BD-%E6%9C%AA%E9%85%8D%E7%BD%AE.png" alt="7-云端备份-未配置"><br><img src="https://picture.zejiewdp.kdns.fr/file/1794573109082_8-%E4%BA%91%E7%AB%AF%E5%A4%87%E4%BB%BD-%E5%B7%B2%E5%90%AF%E7%94%A8.png" alt="8-云端备份-已启用"><br><img src="https://picture.zejiewdp.kdns.fr/file/1794573112454_9-%E4%BA%91%E7%AB%AF%E5%A4%87%E4%BB%BD-%E5%B7%B2%E5%85%B3%E9%97%AD.png" alt="9-云端备份-已关闭"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 软件 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 项目 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>项目-CSV备份接口上线</title>
       <link href="/2026/11/12/%E9%A1%B9%E7%9B%AE-CSV%E5%A4%87%E4%BB%BD%E6%8E%A5%E5%8F%A3%E4%B8%8A%E7%BA%BF/"/>
       <url>/2026/11/12/%E9%A1%B9%E7%9B%AE-CSV%E5%A4%87%E4%BB%BD%E6%8E%A5%E5%8F%A3%E4%B8%8A%E7%BA%BF/</url>
@@ -195,11 +220,11 @@
       
         <tags>
             
+            <tag> 系统安装 </tag>
+            
             <tag> 电脑工具 </tag>
             
             <tag> 免费工具 </tag>
-            
-            <tag> 系统安装 </tag>
             
         </tags>
       
@@ -218,11 +243,11 @@
       
         <tags>
             
+            <tag> 系统安装 </tag>
+            
             <tag> 电脑工具 </tag>
             
             <tag> 免费工具 </tag>
-            
-            <tag> 系统安装 </tag>
             
         </tags>
       
