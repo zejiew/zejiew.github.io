@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>利用cloud studio算力部署的用于viocestudio后端推理</title>
+      <link href="/2026/11/20/%E5%88%A9%E7%94%A8cloud-studio%E7%AE%97%E5%8A%9B%E9%83%A8%E7%BD%B2%E7%9A%84%E7%94%A8%E4%BA%8Evoicestudio%E5%90%8E%E7%AB%AF%E6%8E%A8%E7%90%86/"/>
+      <url>/2026/11/20/%E5%88%A9%E7%94%A8cloud-studio%E7%AE%97%E5%8A%9B%E9%83%A8%E7%BD%B2%E7%9A%84%E7%94%A8%E4%BA%8Evoicestudio%E5%90%8E%E7%AB%AF%E6%8E%A8%E7%90%86/</url>
+      
+        <content type="html"><![CDATA[<p><img src="https://picture.zejiewdp.kdns.fr/file/1795162304247_HVOlMEk.jpg" alt="HVOlMEk"><br>苦于还在使用笔记本3050 laptop 4g的显卡无法进行推理，会爆显存。我就搞了这个调用腾讯cloud studio算力的后端。<br>其实是个驱动小玩具voicestudio的电池。<br>因为懒得做公开版，后端apikey和文件绑定在一起了，公开版还要多加一次随即滚算，太麻烦了。 不上传到仓库了。</p><h1 id="VoiceStudio-云端推理（Cloud-Studio）部署包"><a href="#VoiceStudio-云端推理（Cloud-Studio）部署包" class="headerlink" title="VoiceStudio 云端推理（Cloud Studio）部署包"></a>VoiceStudio 云端推理（Cloud Studio）部署包</h1><p>把本机装好的 <strong>VoiceStudio 0.5.8</strong> 的推理后端搬到腾讯云 <strong>Cloud Studio</strong> 的 GPU 工作空间里跑，<br>本机只留一个瘦客户端。显卡不够的问题就此绕开，界面、声音库、配音流程用法不变。</p><hr><h2 id="为什么是这个方案"><a href="#为什么是这个方案" class="headerlink" title="为什么是这个方案"></a>为什么是这个方案</h2><p>VoiceStudio 桌面端<strong>原生自带远程后端模式</strong>：它能把整个推理后端跑在另一台机器上，<br>桌面端只负责界面与转发（<code>docs/remote-gpu.md</code>）。所以不需要改它的代码，也不需要自己写胶水层，<br>把后端原样搬到云端、在设置里填一个地址就行。</p><p>这个包里放的是从你本机 <code>F:\vstudio\VoiceStudio\resources\</code> 取出的<strong>同版本后端 + Web UI</strong>：</p><table><thead><tr><th>内容</th><th>来源</th><th>作用</th></tr></thead><tbody><tr><td><code>backend/</code></td><td>安装目录 <code>resources/backend</code></td><td>FastAPI 推理服务（TTS &#x2F; ASR &#x2F; 翻译 &#x2F; 配音）</td></tr><tr><td><code>omnivoice/</code></td><td>安装目录 <code>resources/omnivoice</code></td><td>TTS 模型包</td></tr><tr><td><code>frontend/dist/</code></td><td>安装目录 <code>resources/frontend/dist</code></td><td>Web UI，云端直接出网页</td></tr><tr><td><code>config/</code></td><td>安装目录 <code>resources/config</code></td><td>45 个模型的清单与许可</td></tr><tr><td><code>pyproject.toml</code> <code>uv.lock</code></td><td>安装目录 <code>resources/</code></td><td>锁死的依赖版本，保证与桌面端一致</td></tr></tbody></table><p>版本对齐很重要：模型下载记录、数据库结构、API 路由都在这一版里，<br>换版本会出现”桌面端连上了但功能对不上”。</p><hr><h2 id="一、云端部署（Cloud-Studio）"><a href="#一、云端部署（Cloud-Studio）" class="headerlink" title="一、云端部署（Cloud Studio）"></a>一、云端部署（Cloud Studio）</h2><h3 id="1-建-GPU-工作空间"><a href="#1-建-GPU-工作空间" class="headerlink" title="1. 建 GPU 工作空间"></a>1. 建 GPU 工作空间</h3><ol><li>登录 <a href="https://cloudstudio.net/">cloudstudio.net</a>，用微信扫码即可。</li><li><strong>先切换算力规格</strong>：进入工作空间后，顶部栏右侧点「算力」→ 选 <strong>GPU（A10 &#x2F; 24G）</strong>。<br>A10 按 <strong>3.3 机时&#x2F;小时</strong> 扣，首次绑定腾讯云账号送 20 机时，每天签到再领 2 机时<br>（2 机时 ≈ A10 跑 36 分钟）。</li><li>把本目录整个传上去。两种方式：<ul><li><strong>拖拽</strong>：在左侧文件树里把 <code>voicestudio-cloud</code> 文件夹（或解压后的内容）拖进工作空间；</li><li><strong>Git</strong>：把本目录推到一个仓库，在工作空间里 <code>git clone</code>。</li></ul></li></ol><blockquote><p>CPU 规格也能跑，慢很多，适合先验证流程。真正合成语音再切 GPU。</p></blockquote><h3 id="2-装依赖（一次就好）"><a href="#2-装依赖（一次就好）" class="headerlink" title="2. 装依赖（一次就好）"></a>2. 装依赖（一次就好）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> voicestudio-cloud</span><br><span class="line">bash install.sh</span><br></pre></td></tr></table></figure><p>它会装 <code>ffmpeg</code>、装 <code>uv</code>、然后按锁文件装 212 个 Python 包（约 3–6 GB，含 CUDA 版 torch）。<br>国内网络如果慢，先设镜像再跑：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> UV_DEFAULT_INDEX=https://mirrors.aliyun.com/pypi/simple</span><br><span class="line">bash install.sh</span><br></pre></td></tr></table></figure><p>脚本里已经把 Python 锁在 <strong>3.11</strong> —— 锁文件中的 <code>ctranslate2 4.4.0</code> 只有 cp311&#x2F;cp312 轮子，<br>用系统自带的 3.13&#x2F;3.14 会直接装不上。</p><h3 id="3-启动"><a href="#3-启动" class="headerlink" title="3. 启动"></a>3. 启动</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash start.sh</span><br></pre></td></tr></table></figure><p>输出会给你三行关键信息：</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">后端地址 : https://&lt;空间ID&gt;--3900.ap-shanghai2.cloudstudio.club</span><br><span class="line">API Key  : &lt;43 位随机串&gt;</span><br><span class="line">浏览器   : https://&lt;空间ID&gt;--3900.../#api_key=&lt;同上&gt;</span><br></pre></td></tr></table></figure><p>API Key 在第一次启动时自动生成，存在 <code>.cloud-key</code>；丢了就 <code>bash start.sh info</code> 再看一次。</p><p>首次启动会加载引擎，<strong>1–3 分钟</strong>。看进度：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bash start.sh logs      <span class="comment"># 跟日志，看到 /health 返回 ok 就算起来了</span></span><br></pre></td></tr></table></figure><p>然后在「端口」插件里点 3900 那条的「查看预览」，或直接用上面那个 <code>#api_key=</code> 链接，<br>就能在浏览器里打开完整的 VoiceStudio 界面。</p><h3 id="4-接受模型许可（首次必做）"><a href="#4-接受模型许可（首次必做）" class="headerlink" title="4. 接受模型许可（首次必做）"></a>4. 接受模型许可（首次必做）</h3><p>OmniVoice 的 TTS 权重有许可确认，未接受时后端会跳过预加载（日志里是<br><code>Preload skipped: the OmniVoice model licence is not accepted yet.</code>）。<br>在网页里进 <strong>Settings → Engines</strong>，找到 OmniVoice 点接受，再回 <strong>Models</strong> 下载权重（约 2.4 GB）。</p><hr><h2 id="二、本机接入"><a href="#二、本机接入" class="headerlink" title="二、本机接入"></a>二、本机接入</h2><p>本机 VoiceStudio 保持装在 <code>F:\vstudio\VoiceStudio</code> 不动，只是把后端指向云端。</p><p><strong>设置 → Sharing → Remote backend</strong>，填两行：</p><table><thead><tr><th>字段</th><th>填什么</th></tr></thead><tbody><tr><td>Backend URL</td><td><code>https://&lt;空间ID&gt;--3900.ap-shanghai2.cloudstudio.club</code></td></tr><tr><td>API key</td><td><code>bash start.sh info</code> 里的那一串</td></tr></tbody></table><p>点 <strong>Test connection</strong> —— 它会依次请求 <code>/health</code>、用 key 换短期会话、再拉 <code>/system/info</code>，<br>三步全过才会亮绿灯。然后 <strong>Save &amp; reload</strong>，应用会重启并连到云端。</p><p>之后本机不再启动自己的后端，也不再吃本机显存。想看回本地：同一个面板点<br><strong>Use local backend</strong>，或把 URL 清空保存。</p><blockquote><p>URL 必须是完整的 <code>http://</code> 或 <code>https://</code>（<code>gpu-box:3900</code> 这种会被拒绝）。<br>带 key 走 http 是不允许的，所以<strong>一定要用 Cloud Studio 给的那个 https 预览地址</strong>。</p></blockquote><h3 id="一个使用细节（实测所得）"><a href="#一个使用细节（实测所得）" class="headerlink" title="一个使用细节（实测所得）"></a>一个使用细节（实测所得）</h3><p>桌面端<strong>只把后端地址存到磁盘，不存密钥</strong>：密钥当场换成一个 8 小时的短期会话，<br>会话只活在内存里。所以——</p><ul><li>同一次开机内，8 小时内随便用，不用再输；</li><li><strong>关掉桌面端重开，会再弹一次 API key 输入框</strong>，重输一次即可（不是出错）。</li></ul><p>如果觉得每次重开都输很烦，就走浏览器：<code>bash start.sh info</code> 给出的那条<br><code>#api_key=</code> 链接，换来的会话存在标签页里，标签页不关就一直有效。</p><hr><h2 id="三、省钱与止损"><a href="#三、省钱与止损" class="headerlink" title="三、省钱与止损"></a>三、省钱与止损</h2><p>Cloud Studio 的计费逻辑和普通云主机不一样，务必记住三条：</p><ol><li><strong>只要 IDE 页签开着就在扣机时</strong>，哪怕没跑任何任务、窗口最小化。<br>用完请去「应用管理」→ 卡片右侧「…」→ <strong>停止使用</strong>。光关标签页要等 10 分钟左右才释放。</li><li><strong>机时用完不会自动停</strong>，会转成按量付费从腾讯云余额扣（A10 约 3.3 元&#x2F;小时）。<br>每天去「资源管理」看一眼余量。</li><li><strong>默认 1 小时自动关机</strong>，单次最长可设 24 小时。长任务前先在「算力」旁把定时关机调长。</li></ol><p>按这个包的实际用法，建议的节奏是：<strong>CPU 规格准备（传文件、下模型），切 GPU 只做合成</strong>。<br>停机后 <code>data/</code> 目录（声音库、作品、模型权重）留在工作空间里，下次开机不用重装重下。</p><hr><h2 id="四、文件说明"><a href="#四、文件说明" class="headerlink" title="四、文件说明"></a>四、文件说明</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">voicestudio-cloud/</span><br><span class="line">├── install.sh            一次性安装：ffmpeg + uv + 锁定依赖</span><br><span class="line">├── start.sh              启动 / info / logs / fg</span><br><span class="line">├── stop.sh               停止（会提醒你去「应用管理」停计费）</span><br><span class="line">├── .vscode/preview.yml   Cloud Studio 一键运行的配置</span><br><span class="line">├── backend/              FastAPI 后端</span><br><span class="line">├── omnivoice/            TTS 模型包</span><br><span class="line">├── frontend/dist/        Web UI</span><br><span class="line">├── config/               模型清单与许可</span><br><span class="line">├── pyproject.toml        ┐</span><br><span class="line">└── uv.lock               ┘ 依赖版本锁（与桌面端 0.5.8 完全一致）</span><br></pre></td></tr></table></figure><p>运行时才会生成：<code>data/</code>（声音库&#x2F;作品&#x2F;模型）、<code>omnivoice-cloud.log</code>、<code>.cloud-env</code>、<code>.cloud-key</code>、<code>.cloud.pid</code>。</p><hr><h2 id="五、排错"><a href="#五、排错" class="headerlink" title="五、排错"></a>五、排错</h2><table><thead><tr><th>现象</th><th>原因与处理</th></tr></thead><tbody><tr><td>浏览器打开是白屏</td><td>服务没起来。<code>bash start.sh logs</code> 看报错；确认监听的是 <code>0.0.0.0</code> 而不是 <code>127.0.0.1</code>。</td></tr><tr><td>桌面端 Test connection 报 401</td><td>API Key 不对。<code>bash start.sh info</code> 核对，注意别把首尾空格带进去。</td></tr><tr><td>桌面端报 <code>wrong_port</code></td><td>端口填错了。必须是 <code>--3900</code> 那条预览地址，不是 <code>7443</code>。</td></tr><tr><td>装依赖卡在 torch</td><td>国内网络问题。设 <code>UV_DEFAULT_INDEX</code> 镜像后重跑 <code>install.sh</code>。</td></tr><tr><td>合成报显存不足</td><td>规格还是 CPU，或 A10 被别的任务占着。切到 GPU 规格后重启后端。</td></tr><tr><td>日志里有 <code>licence is not accepted</code></td><td>去 Settings → Engines 接受 OmniVoice 许可。</td></tr><tr><td>网页能开但桌面端连不上</td><td>桌面端走 https + key，克隆出来的本地后端默认是 http，<code>OMNIVOICE_SERVER_MODE=1</code> 已由 <code>start.sh</code> 设置。</td></tr></tbody></table><hr><h2 id="六、安全提醒"><a href="#六、安全提醒" class="headerlink" title="六、安全提醒"></a>六、安全提醒</h2><ul><li>API Key 等于这台后端的最高权限，<strong>只走 https</strong>，别贴到群里或截图里。</li><li>预览地址默认是「公开」可访问的。在「端口」插件里把它改成<strong>仅自己可见</strong>。</li><li>这个后端会读写你自己的声音样本。不使用时请停止应用，别让它长期挂着公网可达。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 闭源 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 项目 </tag>
+            
+            <tag> 技术 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>JMC-DP下载器发布</title>
       <link href="/2026/11/16/JMC-DP%E4%B8%8B%E8%BD%BD%E5%99%A8%E5%8F%91%E5%B8%83/"/>
       <url>/2026/11/16/JMC-DP%E4%B8%8B%E8%BD%BD%E5%99%A8%E5%8F%91%E5%B8%83/</url>
@@ -320,11 +347,11 @@
       
         <tags>
             
+            <tag> 系统安装 </tag>
+            
             <tag> 电脑工具 </tag>
             
             <tag> 免费工具 </tag>
-            
-            <tag> 系统安装 </tag>
             
         </tags>
       
@@ -343,11 +370,11 @@
       
         <tags>
             
+            <tag> 系统安装 </tag>
+            
             <tag> 电脑工具 </tag>
             
             <tag> 免费工具 </tag>
-            
-            <tag> 系统安装 </tag>
             
         </tags>
       
