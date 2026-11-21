@@ -1,0 +1,883 @@
+<!DOCTYPE html><html lang="Zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>VoiceStudio-实现过程 | 能美的秘密据点</title><meta name="keywords" content="项目,技术"><meta name="author" content="zejiew"><meta name="copyright" content="zejiew"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="VoiceStudio-实现过程"><meta name="application-name" content="VoiceStudio-实现过程"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="VoiceStudio-实现过程"><meta property="og:url" content="http://kudryavka.top/2026/11/21/VoiceStudio-%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B/index.html"><meta property="og:site_name" content="能美的秘密据点"><meta property="og:description" content="VoiceStudio 云端推理 —— 实现过程记录 记录时间：2026-11-21目标：把本机装好的 VoiceStudio 0.5.8 的推理后端搬到腾讯云 Cloud Studio，用云端 GPU 跑，本机只留界面。起因：本机 RTX 3050 Laptop（4GB 显存）带不动推理。   一"><meta property="og:locale" content="Zh-CN"><meta property="og:image" content="https://picture.zejiewdp.kdns.fr/file/1795255197447_奥木然.png"><meta property="article:author" content="zejiew"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="https://picture.zejiewdp.kdns.fr/file/1795255197447_奥木然.png"><meta name="description" content="VoiceStudio 云端推理 —— 实现过程记录 记录时间：2026-11-21目标：把本机装好的 VoiceStudio 0.5.8 的推理后端搬到腾讯云 Cloud Studio，用云端 GPU 跑，本机只留界面。起因：本机 RTX 3050 Laptop（4GB 显存）带不动推理。   一"><link rel="shortcut icon" href="/favicon.ico"><link rel="canonical" href="http://kudryavka.top/2026/11/21/VoiceStudio-%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B/"><link rel="preconnect" href="//cdn.cbd.int"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/swiper/swiper.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: undefined,
+  postHeadAiDescription: {"enable":true,"gptName":"AnZhiYu","mode":"local","switchBtn":false,"btnLink":"https://afdian.net/item/886a79d4db6711eda42a52540025c377","randomNum":3,"basicWordCount":1000,"key":"xxxx","Referer":"https://xx.xx/"},
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: undefined,
+  greetingBox: undefined,
+  twikooEnvId: '',
+  commentBarrageConfig:undefined,
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: true,
+  mainTone: undefined,
+  authorStatus: {"skills":["🤖 一位业余技术研究爱好者","🔍 知识与资源的收集砖家","🎸 吉他尤克里里乐器通修","🔨 无情的制谱机器","📸 航拍街拍风光拍摄影爱好者","🦾 生成式AI、音频、图像AI爱好者","🧱 小组任务顶级发动机","💐 文学热爱者","🌏 热情的好心人"]},
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: zejiew","link":"链接: ","source":"来源: 能美的秘密据点","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: '能美的秘密据点',
+  title: 'VoiceStudio-实现过程',
+  postAI: '',
+  pageFillDescription: 'VoiceStudio 云端推理 —— 实现过程记录, 一、最终状态（已验证）, 二、关键发现：原生支持不需要改代码, 2.1 怎么发现的, 2.2 为什么不用其他方案, 三、实现步骤, 3.1 打包后端（本地做）, 3.2 写启动脚本, 3.3 本地验证（很重要）, 3.4 云端部署, 3.5 桌面端接入, 四、过程中解决的问题, 4.1 卡在 99% 不动, 4.2 「远程安装已禁用」, 4.3 「下载」≠「安装」, 五、能力分析（源码级）, 5.1 OmniVoice 能控什么, 5.2 三层情绪控制, 5.3 短句参数, 5.4 引擎能力表（本机实测）, 六、踩坑清单, 七、成本, 八、产出清单, 部署包, 引擎安装脚本（后续补充）, 文档, 九、复盘, 有效的做法, 走过的弯路, 遗留, 附：一分钟复现云端推理实现过程记录记录时间目标把本机装好的的推理后端搬到腾讯云用云端跑本机只留界面起因本机显存带不动推理一最终状态已验证笔记本桌面端只负责界面不跑模型短期会话票据腾讯云可用显存后端推理声音库作品数据库证据项状态本机端口无进程监听本地后端确实没在跑云端首次成功合成秒音频秒渲染二关键发现原生支持不需要改代码整个方案能成立是因为查到自带远程后端模式怎么发现的从安装目录里挖出来的后端预构建模型包个模型的清单与许可依赖版本锁定然后在主进程代码里找到这些以及里的官方设计结论桌面端本来就是设计成可以连远程的不需要写胶水层不需要改代码不需要代理转发为什么不用其他方案方案否决原因自建网关转发桌面端要的是完整后端几十个路由转发层等于重写只跑接口界面的声音库历史模型管理全要后端状态用镜像工作空间里不可用且要拉镜像直接改前端改了也没用后端仍在本机三实现步骤打包后端本地做从安装目录取出同版本组件为什么必须同版本模型下载记录数据库路由都在这一版里混版本会出现连上了但功能对不上结果个文件写启动脚本关键环境变量每条都有实际作用不是凑数无头部署放开桌面端才成立的限制非回环请求必须带预览网关在容器外踩过的坑最初只写了云端地址会覆盖默认白名单把桌面端的丢掉导致全挂后来显式补回本地验证很重要没敢直接上云先在本机跑了一遍模式并用局域网模拟非回环客户端测试结果带标记换会话带会话不带访问管理接口拒绝未知拒绝的预检这四步正是桌面端按钮的真实行为在里读到的顺序跑通即代表桌面端会接受云端部署建工作空间模板选不选那些自带几的白占磁盘上传打印出后端地址和里有一处必需修正必须锁里的只有轮子用系统自带的会直接装不上实测报错桌面端接入设置共享和远程访问远程后端云端地址里的那串点通过后四过程中解决的问题卡在不动现象进度条根因源码原话进度条故意封顶只有全部完成才跳是因为在下载权重不碰显卡同时确认了超时模型加载默认秒分钟超过判失败解决设走国内镜像远程安装已禁用现象模型页几乎每个引擎都显示这句点重新检查失败根因这些路由挂了只看是不是它判断的是请求从哪来不是你是不是桌面版而且也放不开它实测验证请求来源局域网本机点按钮云端自己的解法在云端终端里打请求来源就是它自己不算远程实测返回步流程正常执行这不是绕过安全设计你本来就有云服务器的权限只是换了入口这道门防的是公网陌生人下载安装容易踩的坑动作端点需要下载不需要安装需要所以会出现下载了权重引擎仍显示不可用检查还是失败因为只有权重没有运行环境依赖正确顺序环境重新检查下载权重选择五能力分析源码级能控什么封闭词表非自由文本个反应标签没有没有词表只含音色设计属性完全不含情绪性别年龄音高风格口音种方言种四川话东北话河南话所以写用悲伤的语气说会被过滤等于没写三层情绪控制层手段说明内联标签等个唯一直接改情绪的手段停顿任意引擎通用上限秒样本情绪参考音频本身的语气影响力最大成取决于此短句参数参数值来源字符中文实际折算字符源码注释解释了为什么要折算字音节字符等于分钟音频远超模型可靠区间参考音频区间秒引擎能力表本机实测引擎情绪可商用体积安装方式在用已装自由文本最快唯一自由文本子模块仅已装只能英文不能克隆六踩坑清单坑症状解法版本装不上白名单被覆盖桌面端全请求失败显式补回卡住进度不动是在下载设镜像远程安装远程安装已禁用云端终端下载安装下了仍不可用先再下载重新检查失败以为装了但没装它只是探测不装东西每次重开要输以为出错设计如此只存不存密钥机时白扣只是关了标签页必须去应用管理停止使用七成本项数值规格单价机时小时首绑赠送机时小时每日签到机时分钟实测合成秒音频秒机时关键只要页面开着就扣机时与是否在跑任务无关关标签页要等约分钟才释放省钱策略装依赖传文件切规格机时小时只在合成时切存储共享切过去不丢东西同样装依赖规格机时规格机时差倍八产出清单部署包文件后端文件文件模型包个模型清单与许可装依赖锁启动停止一键运行打包引擎安装脚本后续补充脚本作用批量装引擎走手动安装它不在里后端没安装器的启停状态自检文档文件内容上手指南从零使用样本参数断句排错情绪与短句三层情绪控制短句切分机制引擎选择引擎能力对比与推荐引擎安装命令每个引擎的具体安装命令后端计算机是什么意思解释后端计算机与安装限制实现过程本文档九复盘有效的做法先查源码再动手方案能成立是因为在里找到了和确认了原生支持否则很可能去写一套没必要的转发层本地先验证再上云模式在本地跑通用局域网模拟远程客户端把全测完才上传省掉了在云上反复调试的机时用桌面端的真实行为做测试从读出的步顺序照着复现而不是猜走过的弯路最初以为要写转发层查了后端个文件和个环境变量才确认不需要污染部署包测试过程中后端跑起来生成的缓存被打进了文件最后清掉才恢复白名单覆盖第一版只写了云端地址会顶掉默认的这个是靠读的才发现遗留引擎除外都还没装已备好若要商用需要装是非商用云端数据在停机保留但没有备份策略附一分钟复现本地打包已完成用现成云端记下和桌面端设置共享和远程访问远程后端上面打印的地址上面打印的密钥',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-11-21 18:01:51',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="https://cloudflare-imgbed-dxy.pages.dev/file/1745950453548_33145.png"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><div class="back-home-button"><i class="anzhiyufont anzhiyu-icon-grip-vertical"></i><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">能美的秘密据点</div><div class="back-menu-list"><a class="back-menu-item" href="https://kudryavka.top" title="能美的秘密据点"><img class="back-menu-item-icon" src="/img/favicon.ico" alt="能美的秘密据点"/><span class="back-menu-item-text">能美的秘密据点</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">小工具项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://tools.kudryavka.top" title="牢周工具箱"><img class="back-menu-item-icon" src="https://picture.zejiewdp.kdns.fr/file/1793830885615_淡紫礼帽下的慵懒少女.png" alt="牢周工具箱"/><span class="back-menu-item-text">牢周工具箱</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="https://movie.kudryavka.top" title="牢周私人影院"><img class="back-menu-item-icon" src="https://picture.zejiewdp.kdns.fr/file/1793826582244_31107efa35bac1defadde0a7967978c0.jpg" alt="牢周私人影院"/><span class="back-menu-item-text">牢周私人影院</span></a></div></div></div></div><a id="site-name" href="/" accesskey="h"><div class="title">能美的秘密据点</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 要闻直通</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友情链接</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 休闲娱乐</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=18541680699&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 趣闻闲语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div></div><div id="nav-right"><div class="nav-button only-home" id="travellings_button" title="随机前往一个开往项目网站"><a class="site-page" onclick="anzhiyu.totraveling()" title="随机前往一个开往项目网站" href="javascript:void(0);" rel="external nofollow" data-pjax-state="external"><i class="anzhiyufont anzhiyu-icon-train"></i></a></div><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><div class="nav-button" id="search-button"><a class="site-page social-icon search" href="javascript:void(0);" title="搜索🔍" accesskey="s"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span> 搜索</span></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://cloudflare-imgbed-dxy.pages.dev/file/1748241038163_微信图片_20250526143017.jpg" target="_blank"><img class="post-qr-code-img" alt="微信" src="https://cloudflare-imgbed-dxy.pages.dev/file/1748241038163_微信图片_20250526143017.jpg"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://cloudflare-imgbed-dxy.pages.dev/file/1748241043421_微信图片_20250526143011.jpg" target="_blank"><img class="post-qr-code-img" alt="支付宝" src="https://cloudflare-imgbed-dxy.pages.dev/file/1748241043421_微信图片_20250526143011.jpg"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"><div class="console-card" id="card-newest-comments"><div class="card-content"><div class="author-content-item-tips">互动</div><span class="author-content-item-title"> 最新评论</span></div><div class="aside-list"><span>正在加载中...</span></div></div></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/Hexo/" style="font-size: 1.05rem;">Hexo<sup>1</sup></a><a href="/tags/Markdown/" style="font-size: 1.05rem;">Markdown<sup>1</sup></a><a href="/tags/Windows/" style="font-size: 1.05rem;">Windows<sup>1</sup></a><a href="/tags/%E4%BC%98%E5%8C%96/" style="font-size: 1.05rem;">优化<sup>1</sup></a><a href="/tags/%E5%85%8D%E8%B4%B9%E5%B7%A5%E5%85%B7/" style="font-size: 1.05rem;">免费工具<sup>2</sup></a><a href="/tags/%E5%8D%9A%E5%AE%A2%E5%B7%A5%E5%85%B7/" style="font-size: 1.05rem;">博客工具<sup>1</sup></a><a href="/tags/%E5%9B%BE%E5%BA%8A/" style="font-size: 1.05rem;">图床<sup>1</sup></a><a href="/tags/%E5%AE%98%E6%96%B9/" style="font-size: 1.05rem;">官方<sup>1</sup></a><a href="/tags/%E5%B7%B2%E9%83%A8%E7%BD%B2/" style="font-size: 1.05rem;">已部署<sup>1</sup></a><a href="/tags/%E5%BC%80%E6%BA%90%E5%B7%A5%E5%85%B7/" style="font-size: 1.05rem;">开源工具<sup>1</sup></a><a href="/tags/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/" style="font-size: 1.05rem;">开源项目<sup>1</sup></a><a href="/tags/%E6%89%8B%E6%9C%BA%E5%88%B7%E6%9C%BA/" style="font-size: 1.05rem;">手机刷机<sup>1</sup></a><a href="/tags/%E6%8A%80%E6%9C%AF/" style="font-size: 1.05rem;">技术<sup>2</sup></a><a href="/tags/%E6%95%88%E7%8E%87/" style="font-size: 1.05rem;">效率<sup>1</sup></a><a href="/tags/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7/" style="font-size: 1.05rem;">效率工具<sup>1</sup></a><a href="/tags/%E6%95%91%E6%8F%B4/" style="font-size: 1.05rem;">救援<sup>1</sup></a><a href="/tags/%E6%95%99%E7%A8%8B%E6%95%B4%E7%90%86/" style="font-size: 1.05rem;">教程整理<sup>1</sup></a><a href="/tags/%E6%B3%A8%E5%86%8C%E8%A1%A8/" style="font-size: 1.05rem;">注册表<sup>1</sup></a><a href="/tags/%E6%B5%8B%E8%AF%95/" style="font-size: 1.05rem;">测试<sup>1</sup></a><a href="/tags/%E7%94%B5%E8%84%91%E5%B7%A5%E5%85%B7/" style="font-size: 1.05rem;">电脑工具<sup>3</sup></a><a href="/tags/%E7%A1%AC%E7%9B%98%E6%B8%85%E7%90%86/" style="font-size: 1.05rem;">硬盘清理<sup>1</sup></a><a href="/tags/%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85/" style="font-size: 1.05rem;">系统安装<sup>4</sup></a><a href="/tags/%E8%BD%AF%E4%BB%B6%E6%8E%A8%E8%8D%90/" style="font-size: 1.05rem;">软件推荐<sup>1</sup></a><a href="/tags/%E9%A1%B9%E7%9B%AE/" style="font-size: 1.05rem;">项目<sup>7</sup></a><a href="/tags/%E9%A1%B9%E7%9B%AE%E5%88%86%E4%BA%AB/" style="font-size: 1.05rem;">项目分享<sup>2</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2026/11/"><span class="card-archive-list-date">十一月 2026</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">12</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2026/08/"><span class="card-archive-list-date">八月 2026</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2026/01/"><span class="card-archive-list-date">一月 2026</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/06/"><span class="card-archive-list-date">六月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">5</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/04/"><span class="card-archive-list-date">四月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="post-meta-categories"><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-inbox post-meta-icon"></i><a class="post-meta-categories" href="/categories/Voicestudio%E7%A0%94%E7%A9%B6/" itemprop="url">Voicestudio研究</a></span><span class="article-meta tags"><a class="article-meta__tags" href="/tags/%E9%A1%B9%E7%9B%AE/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>项目</span></a><a class="article-meta__tags" href="/tags/%E6%8A%80%E6%9C%AF/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>技术</span></a></span></div></div><h1 class="post-title" itemprop="name headline">VoiceStudio-实现过程</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2026-11-20T16:00:00.000Z" title="发表于 2026-11-21 00:00:00">2026-11-21</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2026-11-21T10:01:51.071Z" title="更新于 2026-11-21 18:01:51">2026-11-21</time></span></div><div class="meta-secondline"><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为广州"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>广州</span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="https://picture.zejiewdp.kdns.fr/file/1795255197447_奥木然.png"></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="http://kudryavka.top/2026/11/21/VoiceStudio-%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B/"><header><a class="post-meta-categories" href="/categories/Voicestudio%E7%A0%94%E7%A9%B6/" itemprop="url">Voicestudio研究</a><a href="/tags/%E9%A1%B9%E7%9B%AE/" tabindex="-1" itemprop="url">项目</a><a href="/tags/%E6%8A%80%E6%9C%AF/" tabindex="-1" itemprop="url">技术</a><h1 id="CrawlerTitle" itemprop="name headline">VoiceStudio-实现过程</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">zejiew</span><time itemprop="dateCreated datePublished" datetime="2026-11-20T16:00:00.000Z" title="发表于 2026-11-21 00:00:00">2026-11-21</time><time itemprop="dateCreated datePublished" datetime="2026-11-21T10:01:51.071Z" title="更新于 2026-11-21 18:01:51">2026-11-21</time></header><h1 id="VoiceStudio-云端推理-——-实现过程记录"><a href="#VoiceStudio-云端推理-——-实现过程记录" class="headerlink" title="VoiceStudio 云端推理 —— 实现过程记录"></a>VoiceStudio 云端推理 —— 实现过程记录</h1><blockquote>
+<p>记录时间：2026-11-21<br>目标：把本机装好的 VoiceStudio 0.5.8 的推理后端搬到腾讯云 Cloud Studio，用云端 GPU 跑，本机只留界面。<br>起因：本机 RTX 3050 Laptop（4GB 显存）带不动推理。</p>
+</blockquote>
+<hr>
+<h2 id="一、最终状态（已验证）"><a href="#一、最终状态（已验证）" class="headerlink" title="一、最终状态（已验证）"></a>一、最终状态（已验证）</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Windows 笔记本 (i5-11300H / 31.8GB / RTX 3050 4GB)</span><br><span class="line">┌─────────────────────────┐</span><br><span class="line">│ VoiceStudio.exe 桌面端    │</span><br><span class="line">│ 只负责界面，不跑模型       │</span><br><span class="line">└───────────┬─────────────┘</span><br><span class="line">            │ https + API Key</span><br><span class="line">            │ 短期会话(8h) / WS 票据(30s)</span><br><span class="line">            ▼</span><br><span class="line">腾讯云 Cloud Studio（Tesla T4 / 15GB 可用显存）</span><br><span class="line">┌─────────────────────────┐</span><br><span class="line">│ FastAPI 后端 :3900        │</span><br><span class="line">│ OmniVoice 推理            │</span><br><span class="line">│ 声音库 / 作品 / 数据库     │</span><br><span class="line">└─────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<p><strong>证据</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>项</th>
+<th>状态</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>%APPDATA%\VoiceStudio\remote-backend.json</code></td>
+<td><code>&#123;&quot;url&quot;:&quot;https://fad35dbb...--3900.ap-shanghai2.cloudstudio.club&quot;&#125;</code></td>
+</tr>
+<tr>
+<td>本机 3900 端口</td>
+<td>无进程监听（本地后端确实没在跑）</td>
+</tr>
+<tr>
+<td>云端 <code>/health</code></td>
+<td><code>&#123;&quot;status&quot;:&quot;ok&quot;,&quot;device&quot;:&quot;cuda (Tesla T4)&quot;,&quot;version&quot;:&quot;0.5.8&quot;&#125;</code></td>
+</tr>
+<tr>
+<td>首次成功合成</td>
+<td>9.9 秒音频 &#x2F; 53 秒渲染，24kHz</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="二、关键发现：原生支持，不需要改代码"><a href="#二、关键发现：原生支持，不需要改代码" class="headerlink" title="二、关键发现：原生支持，不需要改代码"></a>二、关键发现：原生支持，不需要改代码</h2><p>整个方案能成立，是因为<strong>查到 VoiceStudio 自带「远程后端」模式</strong>。</p>
+<h3 id="2-1-怎么发现的"><a href="#2-1-怎么发现的" class="headerlink" title="2.1 怎么发现的"></a>2.1 怎么发现的</h3><p>从安装目录里挖出来的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">F:\vstudio\VoiceStudio\resources\</span><br><span class="line">├── backend\          FastAPI 后端（FastAPI + uvicorn）</span><br><span class="line">├── frontend\dist\    Web UI（Vue，预构建）</span><br><span class="line">├── omnivoice\        TTS 模型包</span><br><span class="line">├── config\           45 个模型的清单与许可</span><br><span class="line">├── pyproject.toml    ↘ 依赖版本锁定</span><br><span class="line">└── uv.lock           ↗</span><br></pre></td></tr></table></figure>
+
+<p>然后在 <code>app.asar</code> 主进程代码里找到这些：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">remotePath = <span class="title function_">join</span>(app.<span class="title function_">getPath</span>(<span class="string">&quot;userData&quot;</span>), <span class="string">&quot;remote-backend.json&quot;</span>)</span><br><span class="line">remoteUrl  = <span class="title function_">loadRemoteBackend</span>(<span class="variable language_">this</span>.<span class="property">remotePath</span>)</span><br><span class="line"><span class="keyword">get</span> <span class="title function_">baseUrl</span>() &#123; <span class="keyword">return</span> <span class="variable language_">this</span>.<span class="property">remoteUrl</span> || <span class="string">`http://127.0.0.1:<span class="subst">$&#123;<span class="variable language_">this</span>.port&#125;</span>`</span> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>以及 <code>docs/remote-gpu.md</code> 里的官方设计：</p>
+<blockquote>
+<p>The desktop app <em>is</em> the thin client — there is no separate binary.<br>You enter a <strong>Backend URL</strong> and an <strong>API key</strong> in Settings.</p>
+</blockquote>
+<p><strong>结论：桌面端本来就是设计成可以连远程的。</strong> 不需要写胶水层、不需要改代码、不需要代理转发。</p>
+<h3 id="2-2-为什么不用其他方案"><a href="#2-2-为什么不用其他方案" class="headerlink" title="2.2 为什么不用其他方案"></a>2.2 为什么不用其他方案</h3><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>否决原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>自建 API 网关转发</td>
+<td>桌面端要的是完整后端（几十个路由 + WebSocket），转发层等于重写</td>
+</tr>
+<tr>
+<td>只跑 <code>/generate</code> 接口</td>
+<td>界面的声音库、历史、模型管理全要后端状态</td>
+</tr>
+<tr>
+<td>用 Docker 镜像</td>
+<td>Cloud Studio 工作空间里 Docker 不可用；且要拉 10GB+ 镜像</td>
+</tr>
+<tr>
+<td>直接改 Electron 前端</td>
+<td>改了也没用，后端仍在本机</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="三、实现步骤"><a href="#三、实现步骤" class="headerlink" title="三、实现步骤"></a>三、实现步骤</h2><h3 id="3-1-打包后端（本地做）"><a href="#3-1-打包后端（本地做）" class="headerlink" title="3.1 打包后端（本地做）"></a>3.1 打包后端（本地做）</h3><p>从安装目录取出同版本组件：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$r</span> = <span class="string">&#x27;F:\vstudio\VoiceStudio\resources&#x27;</span></span><br><span class="line"><span class="variable">$stage</span> = <span class="string">&#x27;.\voicestudio-cloud&#x27;</span></span><br><span class="line"><span class="built_in">Copy-Item</span> <span class="string">&quot;<span class="variable">$r</span>\backend&quot;</span>       <span class="string">&quot;<span class="variable">$stage</span>\backend&quot;</span>   <span class="literal">-Recurse</span></span><br><span class="line"><span class="built_in">Copy-Item</span> <span class="string">&quot;<span class="variable">$r</span>\omnivoice&quot;</span>     <span class="string">&quot;<span class="variable">$stage</span>\omnivoice&quot;</span> <span class="literal">-Recurse</span></span><br><span class="line"><span class="built_in">Copy-Item</span> <span class="string">&quot;<span class="variable">$r</span>\config&quot;</span>        <span class="string">&quot;<span class="variable">$stage</span>\config&quot;</span>    <span class="literal">-Recurse</span></span><br><span class="line"><span class="built_in">Copy-Item</span> <span class="string">&quot;<span class="variable">$r</span>\frontend\dist&quot;</span> <span class="string">&quot;<span class="variable">$stage</span>\frontend\dist&quot;</span> <span class="literal">-Recurse</span></span><br><span class="line"><span class="built_in">Copy-Item</span> <span class="string">&quot;<span class="variable">$r</span>\pyproject.toml&quot;</span>,<span class="string">&quot;<span class="variable">$r</span>\uv.lock&quot;</span>,<span class="string">&quot;<span class="variable">$r</span>\README.md&quot;</span> <span class="variable">$stage</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>为什么必须同版本</strong>：模型下载记录、数据库 schema、API 路由都在这一版里。混版本会出现「连上了但功能对不上」。</p>
+<p>结果：846 个文件，42.6 MB。</p>
+<h3 id="3-2-写启动脚本"><a href="#3-2-写启动脚本" class="headerlink" title="3.2 写启动脚本"></a>3.2 写启动脚本</h3><p><code>start.sh</code> 关键环境变量（每条都有实际作用，不是凑数）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> OMNIVOICE_SERVER_MODE=1        <span class="comment"># 无头部署，放开桌面端才成立的 loopback 限制</span></span><br><span class="line"><span class="built_in">export</span> OMNIVOICE_API_KEY=<span class="string">&quot;<span class="variable">$API_KEY</span>&quot;</span>   <span class="comment"># 非回环请求必须带</span></span><br><span class="line"><span class="built_in">export</span> OMNIVOICE_BIND_HOST=0.0.0.0    <span class="comment"># 预览网关在容器外</span></span><br><span class="line"><span class="built_in">export</span> OMNIVOICE_DATA_DIR=<span class="string">&quot;<span class="subst">$(pwd)</span>/data&quot;</span></span><br><span class="line"><span class="built_in">export</span> OMNIVOICE_CACHE_DIR=<span class="string">&quot;<span class="subst">$(pwd)</span>/data/hf&quot;</span></span><br><span class="line"><span class="built_in">export</span> OMNIVOICE_FRONTEND_DIST=<span class="string">&quot;<span class="subst">$(pwd)</span>/frontend/dist&quot;</span></span><br><span class="line"><span class="built_in">export</span> OMNIVOICE_ALLOWED_HOSTS=<span class="string">&quot;*.cloudstudio.club,...&quot;</span></span><br><span class="line"><span class="built_in">export</span> OMNIVOICE_ALLOWED_ORIGINS=<span class="string">&quot;<span class="variable">$&#123;BASE_URL&#125;</span>,app://voicestudio,...&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>踩过的坑</strong>：最初 <code>OMNIVOICE_ALLOWED_ORIGINS</code> 只写了云端地址，会<strong>覆盖</strong>默认白名单，把桌面端的 <code>app://voicestudio</code> 丢掉，导致 CORS 全挂。后来显式补回：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> OMNIVOICE_ALLOWED_ORIGINS=<span class="string">&quot;<span class="variable">$&#123;BASE_URL&#125;</span>,app://voicestudio,http://localhost:3901,http://127.0.0.1:3901&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-本地验证（很重要）"><a href="#3-3-本地验证（很重要）" class="headerlink" title="3.3 本地验证（很重要）"></a>3.3 本地验证（很重要）</h3><p>没敢直接上云，先在本机跑了一遍 server 模式，并用<strong>局域网 IP</strong> 模拟「非回环客户端」：</p>
+<table>
+<thead>
+<tr>
+<th>测试</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GET /health</code> 带 <code>x-omnivoice-backend</code> 标记</td>
+<td>200 ✅</td>
+</tr>
+<tr>
+<td><code>POST /api/auth/session</code>（Bearer 换会话）</td>
+<td>201 ✅</td>
+</tr>
+<tr>
+<td><code>GET /system/info</code>（带会话）</td>
+<td>200 ✅</td>
+</tr>
+<tr>
+<td><code>POST /api/auth/ws-ticket</code></td>
+<td>201 ✅</td>
+</tr>
+<tr>
+<td>不带 Key 访问管理接口</td>
+<td><strong>401 拒绝</strong> ✅</td>
+</tr>
+<tr>
+<td>未知 Host（DNS rebinding）</td>
+<td>403 拒绝 ✅</td>
+</tr>
+<tr>
+<td><code>app://voicestudio</code> 的 CORS 预检</td>
+<td>200 ✅</td>
+</tr>
+</tbody></table>
+<p>这四步正是桌面端 <code>Test connection</code> 按钮的真实行为（在 <code>app.asar</code> 里读到的顺序），跑通即代表桌面端会接受。</p>
+<h3 id="3-4-云端部署"><a href="#3-4-云端部署" class="headerlink" title="3.4 云端部署"></a>3.4 云端部署</h3><ol>
+<li>Cloud Studio 建工作空间，模板选 <strong>All In One</strong>（不选 PyTorch&#x2F;ComfyUI，那些自带几 GB 的 torch 白占磁盘）</li>
+<li>上传 zip → <code>unzip</code> → <code>bash install.sh</code></li>
+<li><code>bash start.sh</code> → 打印出后端地址和 API Key</li>
+</ol>
+<p><code>install.sh</code> 里有一处必需修正：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uv <span class="built_in">sync</span> --frozen --no-dev --managed-python --python 3.11</span><br></pre></td></tr></table></figure>
+
+<p><strong>必须锁 3.11</strong>：<code>uv.lock</code> 里的 <code>ctranslate2==4.4.0</code> 只有 cp311&#x2F;cp312 轮子，用系统自带的 3.13&#x2F;3.14 会直接装不上（实测报错）。</p>
+<h3 id="3-5-桌面端接入"><a href="#3-5-桌面端接入" class="headerlink" title="3.5 桌面端接入"></a>3.5 桌面端接入</h3><p>设置 → 共享和远程访问 → 远程后端：</p>
+<ul>
+<li>Backend URL：云端地址</li>
+<li>API key：<code>bash start.sh info</code> 里的那串</li>
+</ul>
+<p>点 <strong>Test connection</strong> 通过后 <strong>Save &amp; reload</strong>。</p>
+<hr>
+<h2 id="四、过程中解决的问题"><a href="#四、过程中解决的问题" class="headerlink" title="四、过程中解决的问题"></a>四、过程中解决的问题</h2><h3 id="4-1-卡在-99-不动"><a href="#4-1-卡在-99-不动" class="headerlink" title="4.1 卡在 99% 不动"></a>4.1 卡在 99% 不动</h3><p>现象：进度条 99%，GPU 0%。</p>
+<p>根因（源码原话）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pct_int = <span class="built_in">min</span>(<span class="built_in">round</span>(pct * <span class="number">100</span>), <span class="number">99</span>)   <span class="comment"># cap at 99 until fully done</span></span><br></pre></td></tr></table></figure>
+
+<p>**进度条故意封顶 99%**，只有全部完成才跳 100。GPU 0% 是因为在下载权重，不碰显卡。</p>
+<p>同时确认了超时：模型加载默认 <strong>1200 秒（20 分钟）</strong>，超过判失败。</p>
+<p>解决：设 <code>HF_ENDPOINT=https://hf-mirror.com</code> 走国内镜像。</p>
+<h3 id="4-2-「远程安装已禁用」"><a href="#4-2-「远程安装已禁用」" class="headerlink" title="4.2 「远程安装已禁用」"></a>4.2 「远程安装已禁用」</h3><p>现象：模型页几乎每个引擎都显示这句，点「重新检查」失败。</p>
+<p>根因：这些路由挂了 <code>require_desktop</code>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@router.post(<span class="params"><span class="string">&quot;/engines/sidecar/&#123;engine_id&#125;/install&quot;</span>,</span></span></span><br><span class="line"><span class="params"><span class="meta">             dependencies=[Depends(<span class="params">require_admin</span>), Depends(<span class="params">require_desktop</span>)]</span>)</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">require_desktop</span>(<span class="params">request: Request</span>) -&gt; <span class="literal">None</span>:</span><br><span class="line">    host = request.client.host <span class="keyword">if</span> request.client <span class="keyword">else</span> <span class="literal">None</span></span><br><span class="line">    <span class="keyword">if</span> is_loopback(host):     <span class="comment"># 只看是不是 127.0.0.1</span></span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">raise</span> HTTPException(<span class="number">403</span>, <span class="string">&quot;desktop origin required&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p><strong>它判断的是「请求从哪来」，不是「你是不是桌面版」。</strong> 而且 <code>_server_mode()</code> 也放不开它。</p>
+<p>实测验证：</p>
+<table>
+<thead>
+<tr>
+<th>请求来源</th>
+<th><code>install_allowed</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>局域网 IP（&#x3D; 本机点按钮）</td>
+<td><strong>false</strong> ❌</td>
+</tr>
+<tr>
+<td>云端自己的 127.0.0.1</td>
+<td><strong>true</strong> ✅</td>
+</tr>
+</tbody></table>
+<p><strong>解法</strong>：在云端终端里 curl 打 127.0.0.1——请求来源就是它自己，不算远程。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl -s -X POST <span class="string">&quot;http://127.0.0.1:3900/engines/sidecar/voxcpm2/install&quot;</span> \</span><br><span class="line">     -H <span class="string">&quot;Authorization: Bearer <span class="variable">$KEY</span>&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>实测返回 <code>&#123;&quot;status&quot;:&quot;started&quot;,&quot;engine&quot;:&quot;voxcpm2&quot;&#125;</code>，7 步流程正常执行。</p>
+<blockquote>
+<p>这不是绕过安全设计：你本来就有云服务器的 shell 权限，只是换了入口。这道门防的是「公网陌生人」。</p>
+</blockquote>
+<h3 id="4-3-「下载」≠「安装」"><a href="#4-3-「下载」≠「安装」" class="headerlink" title="4.3 「下载」≠「安装」"></a>4.3 「下载」≠「安装」</h3><p>容易踩的坑：</p>
+<table>
+<thead>
+<tr>
+<th>动作</th>
+<th>端点</th>
+<th>需要 loopback</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>下载</strong></td>
+<td><code>POST /models/install</code></td>
+<td>❌ 不需要</td>
+</tr>
+<tr>
+<td><strong>安装</strong></td>
+<td><code>POST /engines/sidecar/&#123;id&#125;/install</code></td>
+<td>✅ 需要</td>
+</tr>
+</tbody></table>
+<p>所以会出现：下载了 5GB 权重 → 引擎仍显示「不可用」→ 检查还是失败。<strong>因为只有权重，没有运行环境（venv + pip 依赖）。</strong></p>
+<p>正确顺序：<code>install（环境）→ 重新检查 → 下载（权重）→ 选择</code></p>
+<hr>
+<h2 id="五、能力分析（源码级）"><a href="#五、能力分析（源码级）" class="headerlink" title="五、能力分析（源码级）"></a>五、能力分析（源码级）</h2><h3 id="5-1-OmniVoice-能控什么"><a href="#5-1-OmniVoice-能控什么" class="headerlink" title="5.1 OmniVoice 能控什么"></a>5.1 OmniVoice 能控什么</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">OmniVoiceBackend</span>(<span class="title class_ inherited__">TTSBackend</span>):</span><br><span class="line">    instruct_vocabulary = <span class="string">&quot;tags&quot;</span>        <span class="comment"># 封闭词表，非自由文本</span></span><br><span class="line">    inline_tags = OMNIVOICE_INLINE_TAGS <span class="comment"># 13 个反应标签</span></span><br><span class="line">    <span class="comment"># 没有 supports_emotion</span></span><br><span class="line">    <span class="comment"># 没有 instruct_directs_delivery</span></span><br></pre></td></tr></table></figure>
+
+<p><code>instruct</code> 词表<strong>只含音色设计属性，完全不含情绪</strong>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">性别 male/female · 年龄 child→elderly · 音高 very low→very high</span><br><span class="line">风格 whisper · 口音 10 种 · 方言 12 种（四川话/东北话/河南话…）</span><br></pre></td></tr></table></figure>
+
+<p>所以写 <code>instruct=&quot;用悲伤的语气说&quot;</code> 会被过滤，等于没写。</p>
+<h3 id="5-2-三层情绪控制"><a href="#5-2-三层情绪控制" class="headerlink" title="5.2 三层情绪控制"></a>5.2 三层情绪控制</h3><table>
+<thead>
+<tr>
+<th>层</th>
+<th>手段</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>内联标签</td>
+<td><code>[laughter]</code> <code>[sigh]</code> <code>[question-*]</code> <code>[surprise-*]</code> 等 13 个</td>
+<td>唯一直接改情绪的手段</td>
+</tr>
+<tr>
+<td>停顿</td>
+<td><code>[pause 500ms]</code> &#x2F; <code>[pause 2s]</code></td>
+<td>任意引擎通用，上限 10 秒</td>
+</tr>
+<tr>
+<td><strong>样本情绪</strong></td>
+<td>参考音频本身的语气</td>
+<td><strong>影响力最大，8 成取决于此</strong></td>
+</tr>
+</tbody></table>
+<h3 id="5-3-短句参数"><a href="#5-3-短句参数" class="headerlink" title="5.3 短句参数"></a>5.3 短句参数</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>值</th>
+<th>来源</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>DEFAULT_MIN_SENTENCE_LEN</code></td>
+<td>20 字符</td>
+<td><code>sentence_chunker.py</code></td>
+</tr>
+<tr>
+<td><code>DEFAULT_MAX_CHUNK_CHARS</code></td>
+<td>800</td>
+<td><code>chunked_tts.py</code></td>
+</tr>
+<tr>
+<td>中文实际折算</td>
+<td><strong>800 ÷ 2.5 &#x3D; 320 字符</strong></td>
+<td><code>_DENSE_SPEECH_FACTOR</code></td>
+</tr>
+</tbody></table>
+<p>源码注释解释了为什么要折算：CJK 1 字 ≈ 1 音节，800 字符等于 4–5 分钟音频，远超模型可靠区间。</p>
+<p>参考音频区间（<code>speaker_clone.py</code>）：<code>MIN=5.0</code> &#x2F; <code>IDEAL=8.0</code> &#x2F; <code>MAX=15.0</code> 秒。</p>
+<h3 id="5-4-引擎能力表（本机实测）"><a href="#5-4-引擎能力表（本机实测）" class="headerlink" title="5.4 引擎能力表（本机实测）"></a>5.4 引擎能力表（本机实测）</h3><table>
+<thead>
+<tr>
+<th>引擎</th>
+<th>情绪</th>
+<th>instruct</th>
+<th>可商用</th>
+<th>体积</th>
+<th>安装方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>OmniVoice</strong>（在用）</td>
+<td>❌</td>
+<td>tags</td>
+<td>❌ CC-BY-NC</td>
+<td>2.4G</td>
+<td>已装</td>
+</tr>
+<tr>
+<td><strong>VoxCPM2</strong> ⭐</td>
+<td>自由文本</td>
+<td>freeform</td>
+<td>✅ Apache-2.0</td>
+<td>~10G</td>
+<td>pip，最快</td>
+</tr>
+<tr>
+<td>IndexTTS 2.5</td>
+<td>✅ <strong>唯一 emo_alpha</strong></td>
+<td>freeform</td>
+<td>⚠️ other</td>
+<td>~12G</td>
+<td>git</td>
+</tr>
+<tr>
+<td>CosyVoice 3</td>
+<td>自由文本</td>
+<td>freeform</td>
+<td>✅ Apache-2.0</td>
+<td>~14G</td>
+<td>git + 3 子模块</td>
+</tr>
+<tr>
+<td>Ming-3.0</td>
+<td>—</td>
+<td>freeform</td>
+<td>✅ MIT</td>
+<td>~12G</td>
+<td>git，仅 Linux+CUDA</td>
+</tr>
+<tr>
+<td>KittenTTS（已装）</td>
+<td>❌</td>
+<td>freeform</td>
+<td>—</td>
+<td>82M</td>
+<td><strong>只能英文，不能克隆</strong></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="六、踩坑清单"><a href="#六、踩坑清单" class="headerlink" title="六、踩坑清单"></a>六、踩坑清单</h2><table>
+<thead>
+<tr>
+<th>#</th>
+<th>坑</th>
+<th>症状</th>
+<th>解法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Python 版本</td>
+<td><code>ctranslate2</code> 装不上</td>
+<td><code>uv sync --python 3.11</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>CORS 白名单被覆盖</td>
+<td>桌面端全请求失败</td>
+<td>显式补回 <code>app://voicestudio</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>99% 卡住</td>
+<td>进度不动、GPU 0%</td>
+<td>是在下载；设 <code>HF_ENDPOINT</code> 镜像</td>
+</tr>
+<tr>
+<td>4</td>
+<td>远程安装 403</td>
+<td>「远程安装已禁用」</td>
+<td>云端终端 curl 127.0.0.1</td>
+</tr>
+<tr>
+<td>5</td>
+<td>下载≠安装</td>
+<td>下了 5GB 仍不可用</td>
+<td>先 install 再下载</td>
+</tr>
+<tr>
+<td>6</td>
+<td>「重新检查」失败</td>
+<td>以为装了但没装</td>
+<td>它只是探测，不装东西</td>
+</tr>
+<tr>
+<td>7</td>
+<td>每次重开要输 key</td>
+<td>以为出错</td>
+<td>设计如此：只存 URL，不存密钥</td>
+</tr>
+<tr>
+<td>8</td>
+<td>机时白扣</td>
+<td>只是关了标签页</td>
+<td>必须去「应用管理」→ 停止使用</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="七、成本"><a href="#七、成本" class="headerlink" title="七、成本"></a>七、成本</h2><table>
+<thead>
+<tr>
+<th>项</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>T4 规格单价</td>
+<td>3.3 机时&#x2F;小时</td>
+</tr>
+<tr>
+<td>首绑赠送</td>
+<td>20 机时（≈ 6 小时）</td>
+</tr>
+<tr>
+<td>每日签到</td>
+<td>2 机时（≈ 36 分钟）</td>
+</tr>
+<tr>
+<td>实测合成</td>
+<td>9.9 秒音频 &#x2F; 53 秒 ≈ 0.05 机时</td>
+</tr>
+</tbody></table>
+<p><strong>关键</strong>：只要 IDE 页面开着就扣机时，与是否在跑任务无关。关标签页要等约 10 分钟才释放。</p>
+<p><strong>省钱策略</strong>：装依赖&#x2F;传文件切 <strong>CPU 规格</strong>（0.1 机时&#x2F;小时），只在合成时切 GPU。存储共享，切过去不丢东西。同样装 10GB 依赖，CPU 规格 0.02–0.03 机时 vs GPU 规格 0.5–1 机时，<strong>差 20–30 倍</strong>。</p>
+<hr>
+<h2 id="八、产出清单"><a href="#八、产出清单" class="headerlink" title="八、产出清单"></a>八、产出清单</h2><h3 id="部署包"><a href="#部署包" class="headerlink" title="部署包"></a>部署包</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">voicestudio-cloud/          846 文件 / 42.6 MB</span><br><span class="line">├── backend/                FastAPI 后端（501 文件）</span><br><span class="line">├── frontend/dist/          Web UI（348 文件）</span><br><span class="line">├── omnivoice/              TTS 模型包</span><br><span class="line">├── config/                 45 个模型清单与许可</span><br><span class="line">├── pyproject.toml + uv.lock</span><br><span class="line">├── install.sh              装 ffmpeg/uv/依赖（锁 Python 3.11）</span><br><span class="line">├── start.sh                启动 / info / logs / fg</span><br><span class="line">├── stop.sh                 停止</span><br><span class="line">└── .vscode/preview.yml     Cloud Studio 一键运行</span><br></pre></td></tr></table></figure>
+
+<p>打包：<code>voicestudio-cloud.zip</code>（24.9 MB）</p>
+<h3 id="引擎安装脚本（后续补充）"><a href="#引擎安装脚本（后续补充）" class="headerlink" title="引擎安装脚本（后续补充）"></a>引擎安装脚本（后续补充）</h3><table>
+<thead>
+<tr>
+<th>脚本</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>install-engines.sh</code></td>
+<td>批量装 sidecar 引擎（cosyvoice &#x2F; voxcpm2 &#x2F; moss-tts-nano &#x2F; audiocpp），走 curl 127.0.0.1</td>
+</tr>
+<tr>
+<td><code>install-gpt-sovits.sh</code></td>
+<td>GPT-SoVITS 手动安装（它不在 sidecar SPECS 里，后端没安装器）</td>
+</tr>
+<tr>
+<td><code>gsv.sh</code></td>
+<td>GPT-SoVITS api_v2 的启停&#x2F;状态&#x2F;自检</td>
+</tr>
+</tbody></table>
+<h3 id="文档"><a href="#文档" class="headerlink" title="文档"></a>文档</h3><table>
+<thead>
+<tr>
+<th>文件</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>VoiceStudio-上手指南.md</code></td>
+<td>从零使用：样本、参数、断句、排错</td>
+</tr>
+<tr>
+<td><code>VoiceStudio-情绪与短句.md</code></td>
+<td>三层情绪控制 + 短句切分机制</td>
+</tr>
+<tr>
+<td><code>VoiceStudio-引擎选择.md</code></td>
+<td>引擎能力对比与推荐</td>
+</tr>
+<tr>
+<td><code>VoiceStudio-引擎安装命令.md</code></td>
+<td>每个引擎的具体安装命令</td>
+</tr>
+<tr>
+<td><code>VoiceStudio-后端计算机是什么意思.md</code></td>
+<td>解释「后端计算机」与安装限制</td>
+</tr>
+<tr>
+<td><code>VoiceStudio-实现过程.md</code></td>
+<td>本文档</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="九、复盘"><a href="#九、复盘" class="headerlink" title="九、复盘"></a>九、复盘</h2><h3 id="有效的做法"><a href="#有效的做法" class="headerlink" title="有效的做法"></a>有效的做法</h3><ol>
+<li><strong>先查源码再动手</strong>。方案能成立，是因为在 <code>app.asar</code> 里找到了 <code>remoteUrl</code> 和 <code>loadRemoteBackend</code>，确认了原生支持。否则很可能去写一套没必要的转发层。</li>
+<li><strong>本地先验证再上云</strong>。server 模式在本地跑通、用局域网 IP 模拟远程客户端，把 401&#x2F;403&#x2F;201 全测完才上传。省掉了在云上反复调试的机时。</li>
+<li><strong>用桌面端的真实行为做测试</strong>。从 <code>app.asar</code> 读出 <code>Test connection</code> 的 4 步顺序，照着复现，而不是猜。</li>
+</ol>
+<h3 id="走过的弯路"><a href="#走过的弯路" class="headerlink" title="走过的弯路"></a>走过的弯路</h3><ol>
+<li><strong>最初以为要写转发层</strong>。查了后端 501 个文件和 70+ 个环境变量才确认不需要。</li>
+<li><strong><code>__pycache__</code> 污染部署包</strong>。测试过程中后端跑起来生成的缓存被打进了 zip（846 → 1122 文件），最后清掉才恢复。</li>
+<li><strong>CORS 白名单覆盖</strong>。第一版 <code>start.sh</code> 只写了云端地址，会顶掉默认的 <code>app://voicestudio</code>。这个是靠读 <code>csrf.py</code> 的 <code>allowed_origin_values()</code> 才发现。</li>
+</ol>
+<h3 id="遗留"><a href="#遗留" class="headerlink" title="遗留"></a>遗留</h3><ul>
+<li>引擎除 OmniVoice 外都还没装（<code>install-engines.sh</code> 已备好）</li>
+<li>VoxCPM2 若要商用需要装（OmniVoice 是 CC-BY-NC 非商用）</li>
+<li>云端数据在 <code>voicestudio-cloud/data/</code>，停机保留，但没有备份策略</li>
+</ul>
+<hr>
+<h2 id="附：一分钟复现"><a href="#附：一分钟复现" class="headerlink" title="附：一分钟复现"></a>附：一分钟复现</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 本地：打包（已完成，用现成 zip）</span></span><br><span class="line"><span class="comment"># 云端：</span></span><br><span class="line">unzip voicestudio-cloud.zip -d voicestudio-cloud</span><br><span class="line"><span class="built_in">cd</span> voicestudio-cloud</span><br><span class="line"><span class="built_in">export</span> UV_DEFAULT_INDEX=https://mirrors.aliyun.com/pypi/simple</span><br><span class="line"><span class="built_in">export</span> HF_ENDPOINT=https://hf-mirror.com</span><br><span class="line">bash install.sh</span><br><span class="line">bash start.sh info          <span class="comment"># 记下 URL 和 API Key</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 桌面端：设置 → 共享和远程访问 → 远程后端</span></span><br><span class="line"><span class="comment">#   Backend URL = 上面打印的地址</span></span><br><span class="line"><span class="comment">#   API key     = 上面打印的密钥</span></span><br><span class="line"><span class="comment">#   Test connection → Save &amp; reload</span></span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cloudflare-imgbed-dxy.pages.dev/file/1745821252742_12.jpg" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cloudflare-imgbed-dxy.pages.dev/file/1745821252742_12.jpg" title="头像" alt="头像"></a><div class="post-copyright__author_name">zejiew</div><div class="post-copyright__author_desc">zejiew的记事本</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="http://kudryavka.top/2026/11/21/VoiceStudio-%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('http://kudryavka.top/2026/11/21/VoiceStudio-%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B/')">VoiceStudio-实现过程</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"><div class="post-reward" onclick="anzhiyu.addRewardMask()"><div class="reward-button button--animated" title="赞赏作者"><i class="anzhiyufont anzhiyu-icon-hand-heart-fill"></i>打赏作者</div><div class="reward-main"><div class="reward-all"><span class="reward-title">感谢你赐予我前进的力量</span><ul class="reward-group"><li class="reward-item"><a href="https://cloudflare-imgbed-dxy.pages.dev/file/1748241038163_微信图片_20250526143017.jpg" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cloudflare-imgbed-dxy.pages.dev/file/1748241038163_微信图片_20250526143017.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://cloudflare-imgbed-dxy.pages.dev/file/1748241043421_微信图片_20250526143011.jpg" target="_blank"><img class="post-qr-code-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cloudflare-imgbed-dxy.pages.dev/file/1748241043421_微信图片_20250526143011.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul><a class="reward-main-btn" href="/about/#about-reward" target="_blank"><div class="reward-text">赞赏者名单</div><div class="reward-dec">因为你们的支持让我意识到写文章的价值🙏</div></a></div></div></div><div id="quit-box" onclick="anzhiyu.removeRewardMask()" style="display: none"></div></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="http://kudryavka.top/2026/11/21/VoiceStudio-%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=VoiceStudio-实现过程&amp;url=http://kudryavka.top/2026/11/21/VoiceStudio-%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B/&amp;pic=https://picture.zejiewdp.kdns.fr/file/1795255197447_奥木然.png" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://kudryavka.top" target="_blank">能美的秘密据点</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/%E9%A1%B9%E7%9B%AE/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>项目<span class="tagsPageCount">7</span></a><a class="post-meta__box__tags" href="/tags/%E6%8A%80%E6%9C%AF/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>技术<span class="tagsPageCount">2</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="https://picture.zejiewdp.kdns.fr/file/1795255197447_奥木然.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2026/11/20/%E5%88%A9%E7%94%A8cloud-studio%E7%AE%97%E5%8A%9B%E9%83%A8%E7%BD%B2%E7%9A%84%E7%94%A8%E4%BA%8Evoicestudio%E5%90%8E%E7%AB%AF%E6%8E%A8%E7%90%86/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://picture.zejiewdp.kdns.fr/file/1795162196628_7.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">利用cloud studio算力部署的用于viocestudio后端推理</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="anzhiyufont anzhiyu-icon-thumbs-up fa-fw" style="font-size: 1.5rem; margin-right: 4px"></i><span>喜欢这篇文章的人也看了</span></div><div class="relatedPosts-list"><div><a href="/2026/11/20/%E5%88%A9%E7%94%A8cloud-studio%E7%AE%97%E5%8A%9B%E9%83%A8%E7%BD%B2%E7%9A%84%E7%94%A8%E4%BA%8Evoicestudio%E5%90%8E%E7%AB%AF%E6%8E%A8%E7%90%86/" title="利用cloud studio算力部署的用于viocestudio后端推理"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://picture.zejiewdp.kdns.fr/file/1795162196628_7.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2026-11-20</div><div class="title">利用cloud studio算力部署的用于viocestudio后端推理</div></div></a></div><div><a href="/2026/11/16/JMC-DP%E4%B8%8B%E8%BD%BD%E5%99%A8%E5%8F%91%E5%B8%83/" title="JMC-DP下载器发布"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://picture.zejiewdp.kdns.fr/file/1794839612074_Gemini_Generated_Image_vob26lvob26lvob2.jfif" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2026-11-16</div><div class="title">JMC-DP下载器发布</div></div></a></div><div><a href="/2026/11/03/cloudflare-imgbed2.0%E4%B8%8A%E7%BA%BF/" title="cloudflare-imgbed2.0上线"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cloudflare-imgbed-dxy.pages.dev/file/1793711913389_bed.png" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2026-11-03</div><div class="title">cloudflare-imgbed2.0上线</div></div></a></div><div><a href="/2026/11/13/%E5%8D%9A%E5%AE%A2%E7%9B%B8%E5%86%8C%E5%BF%AB%E9%80%9F%E7%BC%96%E8%BE%91%E5%99%A8/" title="博客相册快速编辑器"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://picture.zejiewdp.kdns.fr/file/1794573893596_8.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2026-11-13</div><div class="title">博客相册快速编辑器</div></div></a></div><div><a href="/2026/11/13/%E5%B7%A5%E5%8E%82%E7%89%A9%E6%96%99%E5%8F%B0%E8%B4%A6%E8%BD%AF%E4%BB%B6/" title="工厂物料台账软件"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://picture.zejiewdp.kdns.fr/file/1794572684813_缘之空old_memory1.png" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2026-11-13</div><div class="title">工厂物料台账软件</div></div></a></div><div><a href="/2026/11/12/%E9%A1%B9%E7%9B%AE-CSV%E5%A4%87%E4%BB%BD%E6%8E%A5%E5%8F%A3%E4%B8%8A%E7%BA%BF/" title="项目-CSV备份接口上线"><img class="cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://picture.zejiewdp.kdns.fr/file/1794430898323_CSV-backup项目宣传图生成.png" alt="cover"><div class="content is-center"><div class="date"><i class="anzhiyufont anzhiyu-icon-calendar-days fa-fw"></i> 2026-11-12</div><div class="title">项目-CSV备份接口上线</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info__sayhi" id="author-info__sayhi" onclick="anzhiyu.changeSayHelloText()"></div><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cloudflare-imgbed-dxy.pages.dev/file/1745821252742_12.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-status"><img class="g-status" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cloudflare-imgbed-dxy.pages.dev/file/1745948553807_m09.gif" alt="status"/></div></div><div class="author-info__description">BLOG、分享、日常、记录、技术交流、项目存储、休闲娱乐</div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">zejiew</h1><div class="author-info__desc">zejiew的记事本</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/zejiew" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a><a class="social-icon faa-parent animated-hover" href="https://space.bilibili.com/4954519" target="_blank" title="BiliBili"><i class="anzhiyufont anzhiyu-icon-bilibili"></i></a></div></div></div></div><div class="card-widget anzhiyu-right-widget" id="card-wechat" onclick="null"><div id="flip-wrapper"><div id="flip-content"><div class="face" style="background: url(https://bu.dusays.com/2023/01/13/63c02edf44033.png) center center / 100% no-repeat"></div><div class="back face" style="background: url(https://cloudflare-imgbed-dxy.pages.dev/file/1745865521232_gzhcode11.png) center center / 100% no-repeat"></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#VoiceStudio-%E4%BA%91%E7%AB%AF%E6%8E%A8%E7%90%86-%E2%80%94%E2%80%94-%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95"><span class="toc-number">1.</span> <span class="toc-text">VoiceStudio 云端推理 —— 实现过程记录</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%9C%80%E7%BB%88%E7%8A%B6%E6%80%81%EF%BC%88%E5%B7%B2%E9%AA%8C%E8%AF%81%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">一、最终状态（已验证）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%85%B3%E9%94%AE%E5%8F%91%E7%8E%B0%EF%BC%9A%E5%8E%9F%E7%94%9F%E6%94%AF%E6%8C%81%EF%BC%8C%E4%B8%8D%E9%9C%80%E8%A6%81%E6%94%B9%E4%BB%A3%E7%A0%81"><span class="toc-number">1.2.</span> <span class="toc-text">二、关键发现：原生支持，不需要改代码</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%80%8E%E4%B9%88%E5%8F%91%E7%8E%B0%E7%9A%84"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1 怎么发现的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%94%A8%E5%85%B6%E4%BB%96%E6%96%B9%E6%A1%88"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2 为什么不用其他方案</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%AE%9E%E7%8E%B0%E6%AD%A5%E9%AA%A4"><span class="toc-number">1.3.</span> <span class="toc-text">三、实现步骤</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E6%89%93%E5%8C%85%E5%90%8E%E7%AB%AF%EF%BC%88%E6%9C%AC%E5%9C%B0%E5%81%9A%EF%BC%89"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1 打包后端（本地做）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%86%99%E5%90%AF%E5%8A%A8%E8%84%9A%E6%9C%AC"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2 写启动脚本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E6%9C%AC%E5%9C%B0%E9%AA%8C%E8%AF%81%EF%BC%88%E5%BE%88%E9%87%8D%E8%A6%81%EF%BC%89"><span class="toc-number">1.3.3.</span> <span class="toc-text">3.3 本地验证（很重要）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E4%BA%91%E7%AB%AF%E9%83%A8%E7%BD%B2"><span class="toc-number">1.3.4.</span> <span class="toc-text">3.4 云端部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E6%A1%8C%E9%9D%A2%E7%AB%AF%E6%8E%A5%E5%85%A5"><span class="toc-number">1.3.5.</span> <span class="toc-text">3.5 桌面端接入</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E8%BF%87%E7%A8%8B%E4%B8%AD%E8%A7%A3%E5%86%B3%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.4.</span> <span class="toc-text">四、过程中解决的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E5%8D%A1%E5%9C%A8-99-%E4%B8%8D%E5%8A%A8"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1 卡在 99% 不动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E3%80%8C%E8%BF%9C%E7%A8%8B%E5%AE%89%E8%A3%85%E5%B7%B2%E7%A6%81%E7%94%A8%E3%80%8D"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2 「远程安装已禁用」</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E3%80%8C%E4%B8%8B%E8%BD%BD%E3%80%8D%E2%89%A0%E3%80%8C%E5%AE%89%E8%A3%85%E3%80%8D"><span class="toc-number">1.4.3.</span> <span class="toc-text">4.3 「下载」≠「安装」</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E8%83%BD%E5%8A%9B%E5%88%86%E6%9E%90%EF%BC%88%E6%BA%90%E7%A0%81%E7%BA%A7%EF%BC%89"><span class="toc-number">1.5.</span> <span class="toc-text">五、能力分析（源码级）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-OmniVoice-%E8%83%BD%E6%8E%A7%E4%BB%80%E4%B9%88"><span class="toc-number">1.5.1.</span> <span class="toc-text">5.1 OmniVoice 能控什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E4%B8%89%E5%B1%82%E6%83%85%E7%BB%AA%E6%8E%A7%E5%88%B6"><span class="toc-number">1.5.2.</span> <span class="toc-text">5.2 三层情绪控制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E7%9F%AD%E5%8F%A5%E5%8F%82%E6%95%B0"><span class="toc-number">1.5.3.</span> <span class="toc-text">5.3 短句参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-%E5%BC%95%E6%93%8E%E8%83%BD%E5%8A%9B%E8%A1%A8%EF%BC%88%E6%9C%AC%E6%9C%BA%E5%AE%9E%E6%B5%8B%EF%BC%89"><span class="toc-number">1.5.4.</span> <span class="toc-text">5.4 引擎能力表（本机实测）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E8%B8%A9%E5%9D%91%E6%B8%85%E5%8D%95"><span class="toc-number">1.6.</span> <span class="toc-text">六、踩坑清单</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E6%88%90%E6%9C%AC"><span class="toc-number">1.7.</span> <span class="toc-text">七、成本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E4%BA%A7%E5%87%BA%E6%B8%85%E5%8D%95"><span class="toc-number">1.8.</span> <span class="toc-text">八、产出清单</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E5%8C%85"><span class="toc-number">1.8.1.</span> <span class="toc-text">部署包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E6%93%8E%E5%AE%89%E8%A3%85%E8%84%9A%E6%9C%AC%EF%BC%88%E5%90%8E%E7%BB%AD%E8%A1%A5%E5%85%85%EF%BC%89"><span class="toc-number">1.8.2.</span> <span class="toc-text">引擎安装脚本（后续补充）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E6%A1%A3"><span class="toc-number">1.8.3.</span> <span class="toc-text">文档</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E5%A4%8D%E7%9B%98"><span class="toc-number">1.9.</span> <span class="toc-text">九、复盘</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%89%E6%95%88%E7%9A%84%E5%81%9A%E6%B3%95"><span class="toc-number">1.9.1.</span> <span class="toc-text">有效的做法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B5%B0%E8%BF%87%E7%9A%84%E5%BC%AF%E8%B7%AF"><span class="toc-number">1.9.2.</span> <span class="toc-text">走过的弯路</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%81%97%E7%95%99"><span class="toc-number">1.9.3.</span> <span class="toc-text">遗留</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84%EF%BC%9A%E4%B8%80%E5%88%86%E9%92%9F%E5%A4%8D%E7%8E%B0"><span class="toc-number">1.10.</span> <span class="toc-text">附：一分钟复现</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/11/21/VoiceStudio-%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B/" title="VoiceStudio-实现过程"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://picture.zejiewdp.kdns.fr/file/1795255197447_奥木然.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="VoiceStudio-实现过程"/></a><div class="content"><a class="title" href="/2026/11/21/VoiceStudio-%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B/" title="VoiceStudio-实现过程">VoiceStudio-实现过程</a><time datetime="2026-11-20T16:00:00.000Z" title="发表于 2026-11-21 00:00:00">2026-11-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/11/20/%E5%88%A9%E7%94%A8cloud-studio%E7%AE%97%E5%8A%9B%E9%83%A8%E7%BD%B2%E7%9A%84%E7%94%A8%E4%BA%8Evoicestudio%E5%90%8E%E7%AB%AF%E6%8E%A8%E7%90%86/" title="利用cloud studio算力部署的用于viocestudio后端推理"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://picture.zejiewdp.kdns.fr/file/1795162196628_7.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="利用cloud studio算力部署的用于viocestudio后端推理"/></a><div class="content"><a class="title" href="/2026/11/20/%E5%88%A9%E7%94%A8cloud-studio%E7%AE%97%E5%8A%9B%E9%83%A8%E7%BD%B2%E7%9A%84%E7%94%A8%E4%BA%8Evoicestudio%E5%90%8E%E7%AB%AF%E6%8E%A8%E7%90%86/" title="利用cloud studio算力部署的用于viocestudio后端推理">利用cloud studio算力部署的用于viocestudio后端推理</a><time datetime="2026-11-19T16:00:00.000Z" title="发表于 2026-11-20 00:00:00">2026-11-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/11/16/JMC-DP%E4%B8%8B%E8%BD%BD%E5%99%A8%E5%8F%91%E5%B8%83/" title="JMC-DP下载器发布"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://picture.zejiewdp.kdns.fr/file/1794839612074_Gemini_Generated_Image_vob26lvob26lvob2.jfif" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JMC-DP下载器发布"/></a><div class="content"><a class="title" href="/2026/11/16/JMC-DP%E4%B8%8B%E8%BD%BD%E5%99%A8%E5%8F%91%E5%B8%83/" title="JMC-DP下载器发布">JMC-DP下载器发布</a><time datetime="2026-11-15T16:00:00.000Z" title="发表于 2026-11-16 00:00:00">2026-11-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/11/15/FILEE-%E4%BE%BF%E6%8D%B7%E6%A0%BC%E5%BC%8F%E8%BD%AC%E6%8D%A2%E5%99%A8/" title="FILEE-便捷格式转换器"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://picture.zejiewdp.kdns.fr/file/1794730761898_banner-en.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="FILEE-便捷格式转换器"/></a><div class="content"><a class="title" href="/2026/11/15/FILEE-%E4%BE%BF%E6%8D%B7%E6%A0%BC%E5%BC%8F%E8%BD%AC%E6%8D%A2%E5%99%A8/" title="FILEE-便捷格式转换器">FILEE-便捷格式转换器</a><time datetime="2026-11-14T16:00:00.000Z" title="发表于 2026-11-15 00:00:00">2026-11-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/11/15/Localsend-%E6%9C%AC%E5%9C%B0%E5%B1%80%E5%9F%9F%E7%BD%91%E5%A4%9A%E7%AB%AF%E5%BF%AB%E7%A9%BF%E6%96%87%E4%BB%B6/" title="Localsend-本地局域网多端快穿文件"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://picture.zejiewdp.kdns.fr/file/1794729314286_ScreenShot_2026-11-15_155455_527.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Localsend-本地局域网多端快穿文件"/></a><div class="content"><a class="title" href="/2026/11/15/Localsend-%E6%9C%AC%E5%9C%B0%E5%B1%80%E5%9F%9F%E7%BD%91%E5%A4%9A%E7%AB%AF%E5%BF%AB%E7%A9%BF%E6%96%87%E4%BB%B6/" title="Localsend-本地局域网多端快穿文件">Localsend-本地局域网多端快穿文件</a><time datetime="2026-11-14T16:00:00.000Z" title="发表于 2026-11-15 00:00:00">2026-11-15</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="workboard"><img class="workSituationImg boardsign" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://twikoo-magic.oss-cn-hangzhou.aliyuncs.com/HONKAI3-Stan/a0a41607578a6286f8d245338addd0d41bbd609b.gif" alt="如果不开心，请小猫蹭蹭你。" title="如果不开心，请小猫蹭蹭你。"/><div id="runtimeTextTip"></div></div><p id="ghbdages"><a class="github-badge" target="_blank" href="https://hexo.io/" style="margin-inline:5px" data-title="博客框架为Hexo_v5.4.0" title="博客框架为Hexo_v5.4.0"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.1.5/img/badge/Frame-Hexo.svg" alt="博客框架为Hexo_v5.4.0"/></a><a class="github-badge" target="_blank" href="https://blog.anheyu.com/" style="margin-inline:5px" data-title="本站基于anzhiyu主题修改" title="本站基于anzhiyu主题修改"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.9/img/Theme-AnZhiYu-2E67D3.svg" alt="本站基于anzhiyu主题修改"/></a><a class="github-badge" target="_blank" href="https://github.com/" style="margin-inline:5px" data-title="本站项目由Github托管，部署于cloudflare page，由cloudflare提供CDN加速" title="本站项目由Github托管，部署于cloudflare page，由cloudflare提供CDN加速"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.1.5/img/badge/Source-Github.svg" alt="本站项目由Github托管，部署于cloudflare page，由cloudflare提供CDN加速"/></a><a class="github-badge" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" style="margin-inline:5px" data-title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://npm.elemecdn.com/anzhiyu-blog@2.2.0/img/badge/Copyright-BY-NC-SA.svg" alt="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可"/></a></p></div><div id="footer-bar"><div class="footer-bar-links"><div class="footer-bar-left"><div id="footer-bar-tips"><div class="copyright">&copy;2023 - 2026 By <a class="footer-bar-link" href="/" title="zejiew" target="_blank">zejiew</a></div></div><div id="footer-type-tips"></div></div><div class="footer-bar-right"><a class="footer-bar-link" target="_blank" rel="noopener" href="https://github.com/anzhiyu-c/hexo-theme-anzhiyu" title="主题">主题</a></div></div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">21</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">25</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">11</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">能美的秘密据点</div><div class="back-menu-list"><a class="back-menu-item" href="https://kudryavka.top" title="能美的秘密据点"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/favicon.ico" alt="能美的秘密据点"/><span class="back-menu-item-text">能美的秘密据点</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">小工具项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://tools.kudryavka.top" title="牢周工具箱"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://picture.zejiewdp.kdns.fr/file/1793830885615_淡紫礼帽下的慵懒少女.png" alt="牢周工具箱"/><span class="back-menu-item-text">牢周工具箱</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="https://movie.kudryavka.top" title="牢周私人影院"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://picture.zejiewdp.kdns.fr/file/1793826582244_31107efa35bac1defadde0a7967978c0.jpg" alt="牢周私人影院"/><span class="back-menu-item-text">牢周私人影院</span></a></div></div></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 文章</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/archives/"><i class="anzhiyufont anzhiyu-icon-box-archive faa-tada" style="font-size: 0.9em;"></i><span> 要闻直通</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/categories/"><i class="anzhiyufont anzhiyu-icon-shapes faa-tada" style="font-size: 0.9em;"></i><span> 分类</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags faa-tada" style="font-size: 0.9em;"></i><span> 标签</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 友情链接</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/link/"><i class="anzhiyufont anzhiyu-icon-link faa-tada" style="font-size: 0.9em;"></i><span> 友人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/fcircle/"><i class="anzhiyufont anzhiyu-icon-artstation faa-tada" style="font-size: 0.9em;"></i><span> 朋友圈</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/comments/"><i class="anzhiyufont anzhiyu-icon-envelope faa-tada" style="font-size: 0.9em;"></i><span> 留言板</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 休闲娱乐</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/music/?id=18541680699&amp;server=netease"><i class="anzhiyufont anzhiyu-icon-music faa-tada" style="font-size: 0.9em;"></i><span> 音乐馆</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/bangumis/"><i class="anzhiyufont anzhiyu-icon-bilibili faa-tada" style="font-size: 0.9em;"></i><span> 追番页</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/album/"><i class="anzhiyufont anzhiyu-icon-images faa-tada" style="font-size: 0.9em;"></i><span> 相册集</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/air-conditioner/"><i class="anzhiyufont anzhiyu-icon-fan faa-tada" style="font-size: 0.9em;"></i><span> 小空调</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><span> 关于</span></a><ul class="menus_item_child"><li><a class="site-page child faa-parent animated-hover" href="/about/"><i class="anzhiyufont anzhiyu-icon-paper-plane faa-tada" style="font-size: 0.9em;"></i><span> 关于本人</span></a></li><li><a class="site-page child faa-parent animated-hover" href="/essay/"><i class="anzhiyufont anzhiyu-icon-lightbulb faa-tada" style="font-size: 0.9em;"></i><span> 趣闻闲语</span></a></li><li><a class="site-page child faa-parent animated-hover" href="javascript:toRandomPost()"><i class="anzhiyufont anzhiyu-icon-shoe-prints1 faa-tada" style="font-size: 0.9em;"></i><span> 随便逛逛</span></a></li></ul></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/Hexo/" style="font-size: 0.88rem;">Hexo<sup>1</sup></a><a href="/tags/Markdown/" style="font-size: 0.88rem;">Markdown<sup>1</sup></a><a href="/tags/Windows/" style="font-size: 0.88rem;">Windows<sup>1</sup></a><a href="/tags/%E4%BC%98%E5%8C%96/" style="font-size: 0.88rem;">优化<sup>1</sup></a><a href="/tags/%E5%85%8D%E8%B4%B9%E5%B7%A5%E5%85%B7/" style="font-size: 0.88rem;">免费工具<sup>2</sup></a><a href="/tags/%E5%8D%9A%E5%AE%A2%E5%B7%A5%E5%85%B7/" style="font-size: 0.88rem;">博客工具<sup>1</sup></a><a href="/tags/%E5%9B%BE%E5%BA%8A/" style="font-size: 0.88rem;">图床<sup>1</sup></a><a href="/tags/%E5%AE%98%E6%96%B9/" style="font-size: 0.88rem;">官方<sup>1</sup></a><a href="/tags/%E5%B7%B2%E9%83%A8%E7%BD%B2/" style="font-size: 0.88rem;">已部署<sup>1</sup></a><a href="/tags/%E5%BC%80%E6%BA%90%E5%B7%A5%E5%85%B7/" style="font-size: 0.88rem;">开源工具<sup>1</sup></a><a href="/tags/%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE/" style="font-size: 0.88rem;">开源项目<sup>1</sup></a><a href="/tags/%E6%89%8B%E6%9C%BA%E5%88%B7%E6%9C%BA/" style="font-size: 0.88rem;">手机刷机<sup>1</sup></a><a href="/tags/%E6%8A%80%E6%9C%AF/" style="font-size: 0.88rem;">技术<sup>2</sup></a><a href="/tags/%E6%95%88%E7%8E%87/" style="font-size: 0.88rem;">效率<sup>1</sup></a><a href="/tags/%E6%95%88%E7%8E%87%E5%B7%A5%E5%85%B7/" style="font-size: 0.88rem;">效率工具<sup>1</sup></a><a href="/tags/%E6%95%91%E6%8F%B4/" style="font-size: 0.88rem;">救援<sup>1</sup></a><a href="/tags/%E6%95%99%E7%A8%8B%E6%95%B4%E7%90%86/" style="font-size: 0.88rem;">教程整理<sup>1</sup></a><a href="/tags/%E6%B3%A8%E5%86%8C%E8%A1%A8/" style="font-size: 0.88rem;">注册表<sup>1</sup></a><a href="/tags/%E6%B5%8B%E8%AF%95/" style="font-size: 0.88rem;">测试<sup>1</sup></a><a href="/tags/%E7%94%B5%E8%84%91%E5%B7%A5%E5%85%B7/" style="font-size: 0.88rem;">电脑工具<sup>3</sup></a><a href="/tags/%E7%A1%AC%E7%9B%98%E6%B8%85%E7%90%86/" style="font-size: 0.88rem;">硬盘清理<sup>1</sup></a><a href="/tags/%E7%B3%BB%E7%BB%9F%E5%AE%89%E8%A3%85/" style="font-size: 0.88rem;">系统安装<sup>4</sup></a><a href="/tags/%E8%BD%AF%E4%BB%B6%E6%8E%A8%E8%8D%90/" style="font-size: 0.88rem;">软件推荐<sup>1</sup></a><a href="/tags/%E9%A1%B9%E7%9B%AE/" style="font-size: 0.88rem;">项目<sup>7</sup></a><a href="/tags/%E9%A1%B9%E7%9B%AE%E5%88%86%E4%BA%AB/" style="font-size: 0.88rem;">项目分享<sup>2</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="18541680699" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.7"></meting-js></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="anzhiyufont anzhiyu-icon-xmark"></i></button></nav><div class="is-center" id="loading-database"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-pulse-icon"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://music.163.com/#/playlist?id=18541680699&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><script>var meting_api = "https://api.injahow.cn/meting/?server=:server&type=:type&id=:id&r=:r";
+</script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("04/03/2023 00:00:00"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2023 By 安知鱼 V1.6.14",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 zejiew 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><script async="async">(function () {
+  var grt = new Date("04/03/2023 00:00:00"); //设置网站上线时间
+  var now = new Date();
+  var dnum;
+  var hnum;
+  var mnum;
+  var snum;
+  var nowHour;
+
+  // 计算并更新天数、小时数、分钟数和秒数
+  function updateTime() {
+    now = new Date(); // 更新 now 的值
+    nowHour = now.getHours(); // 更新 nowHour 的值
+    var days = (now - grt) / 1000 / 60 / 60 / 24;
+    dnum = Math.floor(days);
+    var hours = (now - grt) / 1000 / 60 / 60 - 24 * dnum;
+    hnum = Math.floor(hours);
+    if (String(hnum).length == 1) {
+      hnum = "0" + hnum;
+    }
+    var minutes = (now - grt) / 1000 / 60 - 24 * 60 * dnum - 60 * hnum;
+    mnum = Math.floor(minutes);
+    if (String(mnum).length == 1) {
+      mnum = "0" + mnum;
+    }
+    var seconds = (now - grt) / 1000 - 24 * 60 * 60 * dnum - 60 * 60 * hnum - 60 * mnum;
+    snum = Math.round(seconds);
+    if (String(snum).length == 1) {
+      snum = "0" + snum;
+    }
+  }
+
+  // 更新网页中显示的网站运行时间
+  function updateHtml() {
+    const footer = document.getElementById("footer");
+    if (!footer) return
+    let currentTimeHtml = "";
+    if (nowHour < 18 && nowHour >= 9) {
+      // 如果是上班时间，默认就是"安知鱼-上班摸鱼中.svg"图片，不需要更改
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    } else {
+      // 如果是下班时间，插入"安知鱼-下班啦.svg"图片
+      let img = document.querySelector("#workboard .workSituationImg");
+      if (img != null) {
+        img.src = "https://twikoo-magic.oss-cn-hangzhou.aliyuncs.com/HONKAI3-Stan/70677f9c51bd601e60881da47d77a4e6189ad895.gif";
+        img.title = "人就该开开心心的玩耍，嘿嘿~";
+        img.alt = "人就该开开心心的玩耍，嘿嘿~";
+      }
+
+      currentTimeHtml = `本站居然运行了 ${dnum} 天<span id='runtime'> ${hnum} 小时 ${mnum} 分 ${snum} 秒 </span><i class='anzhiyufont anzhiyu-icon-heartbeat' style='color:red'></i>`;
+    }
+
+    if (document.getElementById("runtimeTextTip")) {
+      document.getElementById("runtimeTextTip").innerHTML = currentTimeHtml;
+    }
+  }
+
+  setInterval(() => {
+    updateTime();
+    updateHtml();
+  }, 1000);
+})();</script><script src="/js/search/local-search.js"></script><div class="js-pjax"><input type="hidden" name="page-type" id="page-type" value="post"></div><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>
